@@ -1,0 +1,44 @@
+When reading the problem statement:
+
+    Why is this limitation here? How would the problem change if it is not here?
+    What is unusual?
+    What the problem asks me to do?
+    Can I reformulate it as some standard problem? as a play on some standard problem? as a special case of some hard (NP-complete maybe) problem?
+
+While solving the problem:
+
+    How would I solve an easier version of this problem? Decrease limitations. Change the underlying object to something simpler: [graph] → [connected graph] → [cactus] → [unicycle] → [tree] → [bamboo/array] or [star]; [matrix/grid] → [array]. Is there some observation that would work for the general version too?
+    How to answer one query?
+    How would I solve a small case on paper? How would I solve it without time or memory limitations?
+
+Before implementing the problem:
+
+    What’s the complexity?
+    Do I understand the problem correctly?
+    What functions do I need?
+    Which places are tricky? What do I need to remember to implement them correctly?
+    Which place is the heaviest by implementation? Can I do it simpler?
+    Which place is the slowest? Where do I need to be careful about constant factors and where I can choose slower but simpler implementation?
+
+If not AC:
+
+    Did you remember to do everything to handle the tricky places you thought about before?
+    Is the solution correct?
+    Do I understand the problem correctly?
+
+If you have a test on which the solution gives wrong answer:
+
+    Is the solution doing what it was supposed to do?
+    Is the problem in the code or in the idea?
+
+If stress-test cannot find the counter-test:
+
+    Do I understand the problem correctly?
+    Is my stupid solution definitely stupid? Does it use any assumptions/observations from the main solution?
+    Am I generating all possible test variants? Does the problem have multitest, and if so, am I generating multitest?
+
+After getting accepted:
+
+    What could I have done better?
+    What areas took me more time than I would like?
+    Are there any tricks to simplify the implementation?

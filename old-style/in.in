@@ -1,0 +1,19 @@
+Functional Requirements
+
+    Support operations: +, -, *, /.
+    Evaluate mathematical expression with operator precedence (parentheses > *// > +/-).
+    Recursively break down the expression into sub-expressions.
+    One pass string processing, no lists or extra data structures.
+    O(n) time complexity.
+    Handle and process an empty string, return empty output.
+    Return the number if the string contains only a number.
+    Raise errors for:
+        Misplaced operators.
+        Misplaced parentheses.
+        Division by zero.
+
+Edge Cases
+
+    Empty string → empty output.
+    Single number → return the number.
+    Invalid expressions → raise error.
