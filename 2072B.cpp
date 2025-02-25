@@ -1,4 +1,4 @@
-// #define ONLINE_JUDGE
+#define ONLINE_JUDGE
 #include "bits/stdc++.h"
 using namespace std;
 #ifndef ONLINE_JUDGE
@@ -24,5 +24,17 @@ int main() {
 }
 
 void solve(){
-    
+    string s;
+    ll n; cin >> n >> s;
+    if (n < 3)
+        kill(0);
+    ll cnt1 = 0, // -
+        cnt2 = 0;
+    each(ch, s)
+        if (ch == '-')
+            cnt1++;
+        else 
+            cnt2++;
+    print(cnt1, cnt2);
+    cout << cnt1/2 * (cnt1/2+cnt1%2) * cnt2;
 }

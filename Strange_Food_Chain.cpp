@@ -24,5 +24,14 @@ int main() {
 }
 
 void solve(){
-    
+    int n, k; cin >> n >> k;
+    while(k--){
+        int d, a, b;
+        cin >> d >> a >> b;
+        if (d == 1){
+            
+        } else {
+
+        }
+    }
 }

@@ -16,7 +16,7 @@ void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--){
         solve();
         if(tt) cout << '\n';
@@ -24,5 +24,9 @@ int main() {
 }
 
 void solve(){
-    
+    ll n, s; 
+    cin >> n >> s;
+    if (s > n * 250)
+        kill("Daily quota exceeded");
+    kill("Submitted");
 }

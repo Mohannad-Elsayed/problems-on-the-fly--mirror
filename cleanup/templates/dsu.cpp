@@ -15,10 +15,13 @@ class DSU {
     public:
     DSU() {}
     DSU(int n) {
-        N = n + 100;
+        init(n);
+    }
+    void init(int _n){
+        N = _n + 100;
         root.resize(N);
         sze.resize(N);
-        numSets = n;
+        numSets = _n;
         for (int i = 0; i<N; i++)
             make_set(i);
     }
@@ -46,7 +49,7 @@ class DSU {
         return find_set(u) == find_set(v);
     }
     int size_set(int u){
-        return sze[root(u)];
+        return sze[find_set(u)];
     }
     int size(){
         return numSets;

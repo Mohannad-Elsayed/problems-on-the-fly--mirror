@@ -5,8 +5,8 @@
 
 using namespace std;
 
-const int MAXN = 100000;
-
+#pragma region fast_is_prime
+const int MAXN = 200010;
 template<int N>
 struct Sieve {
     bool is_prime[N];
@@ -21,17 +21,16 @@ struct Sieve {
         }
     }
 };
-
 template<Sieve<MAXN> s>
 struct SieveWrapper {
     static bool get(int n) {
         return s.is_prime[n];
     }
 };
-
 bool fast_is_prime(int n) {
     return SieveWrapper<Sieve<MAXN>{}>::get(n);
 }
+#pragma endregion fast_is_prime
 
 
 bool slow_is_prime(int n) {
@@ -39,7 +38,7 @@ bool slow_is_prime(int n) {
 }
 
 
-const int reps = 100000;
+const int reps = 10000;
 int main() {
     vector<int> numbers(reps);
     for (int i = 0; i < reps; i++) {

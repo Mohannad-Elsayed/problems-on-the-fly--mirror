@@ -1,12 +1,12 @@
 // #define ONLINE_JUDGE
-#include "bits/stdc++.h"
-using namespace std;
 #ifndef ONLINE_JUDGE
     #include "cleanup/debug.h"
 #else
     #define print(...)
     #define printarr(...)
 #endif
+#include "bits/stdc++.h"
+using namespace std;
 using ll = long long;
 #define all(x) (x).begin(), (x).end()
 #define rall(x) (x).rbegin(), (x).rend()

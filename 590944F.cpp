@@ -24,5 +24,9 @@ int main() {
 }
 
 void solve(){
-    
+    int n; cin >> n;
+    vector<int> v(n);
+    each(i, v)
+        cin >> i;
+    cout << *max_element(all(v));
 }

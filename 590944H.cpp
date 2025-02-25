@@ -16,7 +16,7 @@ void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--){
         solve();
         if(tt) cout << '\n';
@@ -24,5 +24,5 @@ int main() {
 }
 
 void solve(){
-    
+    kill("Ramadan Mubarak!");
 }

@@ -24,5 +24,11 @@ int main() {
 }
 
 void solve(){
-    
+    int n, p, k; 
+    cin >> n >> k >> p;
+    int a = abs(n*p);
+    print(a);
+    if (k > a || k < -a)
+        kill(-1);
+    kill(int(abs(k)/abs(p) + bool(k%p)));
 }

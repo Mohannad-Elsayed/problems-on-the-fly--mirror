@@ -1,5 +1,5 @@
 import decimal
-decimal.getcontext().prec = 500
+decimal.getcontext().prec = 20
 # print(decimal.getcontext())
 # a = decimal.Decimal('10.5')
 # b = decimal.Decimal('.5')
@@ -9,4 +9,5 @@ for _ in range(int(input())):
     a = decimal.Decimal(a)
     b = decimal.Decimal(b)
     # print(a, b)
-    print(int((a.log10() * b).to_integral_value()) + 1)
+    # print((a.log10()) * b)
+    print(int((a.log10() * b)) + 1)
