@@ -24,24 +24,5 @@ int main() {
 }
 
 void solve(){
-    int n, m; cin >> n >> m;
-    n *= m;
-    vector<int> v(n);
-    each(i, v)
-        cin >> i;
-    int neg = 0, pos = 0, z = 0, s = 0, mn = 10000;
-    each(i, v){
-        if (i < 0)
-            neg++;
-        if (i > 0)
-            pos++;
-        if (!i)
-            z++;
-        s += abs(i);
-        mn = min(mn, abs(i));
-    }
-    if ((neg%2) == 0)
-        kill(s);
-    s -= 2 * mn;
-    kill(s);
+    
 }

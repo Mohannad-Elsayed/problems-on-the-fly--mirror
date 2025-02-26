@@ -96,5 +96,6 @@
         "generator": "cpp",
         "print": "cpp",
         "text_encoding": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }

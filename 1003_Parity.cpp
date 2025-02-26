@@ -14,6 +14,7 @@ using ll = long long;
 #define each(x, v) for (auto &(x) : (v))
 void solve();
 int main() {
+    // freopen("in.in", "rt", stdin);
     cin.tie(0)->sync_with_stdio(0);
     int tt = 1;
     // cin >> tt;
@@ -31,8 +32,7 @@ int get_compressed(int x){
         coord_comp.begin();
 }
 void solve(){
-    freopen("in.in", "rt", stdin);
-    int n, q;
+    int n = -1, q;
     cin >> n;
     while(true){
         cin >> q;
