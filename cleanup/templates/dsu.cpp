@@ -1,11 +1,10 @@
 class DSU {
     private:
-    using type = int;
-    int N = -1, numSets;
-    vector<type> root;
+    int N = 0, numSets;
+    vector<int> root;
     vector<int> sze;
     bool is_initialized(){
-        return ~N;
+        return N;
     }
     void make_set(int u){
         assert(is_initialized());

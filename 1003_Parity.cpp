@@ -22,45 +22,89 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-struct range{
-    int s, t, e;
-    range(int a, int b, int c) : s(a), t(b), e(c){};
-    friend ostream& operator << (ostream& o, range& r){
-        o << r.s << ' ' << r.t << ' ' << r.e << '\n';
-        return o;
-    }
-};
+
+vector<int> coord_comp;
+int get_compressed(int x){
+    return 
+        lower_bound(all(coord_comp), x) 
+        - 
+        coord_comp.begin();
+}
 void solve(){
-    int n, q; cin >> n >> q;
-    vector<range> vr;
-    for (int i = 0; i<q; i++){
-        int a, b, t;
-        string tt;
-        cin >> a >> b >> tt;
-        t = (tt == "even" ? 0 : 1);
-        vr.push_back(range(a, b, t));
+    freopen("in.in", "rt", stdin);
+    int n, q;
+    cin >> n;
+    while(true){
+        cin >> q;
+        // if (n == 10 && q == 3)
+        //     q = 4;
+        vector<tuple<int, int, int>> queries;
+        coord_comp.clear();
+        for (int i = 0; i<q; i++){
+            int l, r, t;
+            string s;
+            cin >> l >> r >> s;
+            coord_comp.push_back(--l);
+            coord_comp.push_back(--r);
+            t = (s[0] == 'e' ? 0 : 1);
+            queries.push_back({l, r, t});
+        }
+        // coordinate compression
+        sort(all(coord_comp));
+        coord_comp.erase(unique(all(coord_comp)), coord_comp.end());
+        print(coord_comp);
+
+        vector<int> lst(coord_comp.size() + 1);
+        int ans = q;
+
+        for (int qq = 0; qq<q; qq++){
+            auto [l, r, t] = queries[qq];
+            // print(qq, l, r);
+            l = get_compressed(l);
+            r = get_compressed(r);
+            print(l, r, t);
+            // print(get_compressed(l), get_compressed(r), t);
+            if (t) { // odd
+                int sum = 0, has_zero = -1;
+                for (int i = l; i <= r; i++){
+                    sum += (lst[i] == -1 ? 0 : lst[i]);
+                    if (!lst[i])
+                        has_zero = i;
+                }
+                if (sum%2 == 0 && has_zero == -1){
+                    ans = qq;
+                    break;
+                }
+                for (int i = l; i <= r; i++){
+                    if (has_zero != i && !lst[i])
+                        lst[i] = -1;
+                }
+                if (~has_zero){
+                    lst[has_zero] = 1;
+                }
+            } else { // even
+                int sum = 0, has_zero = -1;
+                for (int i = l; i <= r; i++){
+                    sum += (lst[i] == -1 ? 0 : lst[i]);
+                    if (!lst[i])
+                        has_zero = i;
+                }
+                if (sum&1 && has_zero == -1){
+                    ans = qq;
+                    break;
+                }
+                for (int i = l; i <= r; i++){
+                    if (!lst[i] && i != has_zero)
+                        lst[i] = -1;
+                }
+                lst[has_zero] = 1;
+            }
+            print(lst);
+        }
+        cout << ans;
+        cin >> n;
+        if (n == -1)
+            return;
+        cout << '\n';
     }
-    each(i, vr)
-        cout << i;
-    print("---");
-    sort(all(vr), [&](range a, range b){
-        return a.s < b.s;
-    });
-    int c = 1;
-    for (int i = 0; i<q; i++){
-        vr[i].s = c;
-        if (i+1 < n && vr[i].s != vr[i+1].s)
-            c++;
-    }
-    sort(all(vr), [&](range a, range b){
-        return a.t < b.t;
-    });
-    c = 1;
-    for (int i = 0; i<q; i++){
-        vr[i].t = c;
-        if (i+1 < n && vr[i].t != vr[i+1].t)
-            c++;
-    }
-    each(i, vr)
-        cout << i;
 }
