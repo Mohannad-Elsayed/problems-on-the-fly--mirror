@@ -18,7 +18,6 @@ class DSU {
     private:
     int N = 0, numSets;
     vector<int> root;
-    vector<int> sze;
     bool is_initialized(){
         return N;
     }
@@ -26,8 +25,11 @@ class DSU {
         assert(is_initialized());
         root[u] = u;
         sze[u] = 1;
+        mn[u] = u;
+        mx[u] = u;
     }
     public:
+    vector<int> sze, mn, mx;
     DSU() {}
     DSU(int n) {
         init(n);
@@ -36,6 +38,8 @@ class DSU {
         N = _n + 100;
         root.resize(N);
         sze.resize(N);
+        mn.resize(N);
+        mx.resize(N);
         numSets = _n;
         for (int i = 0; i<N; i++)
             make_set(i);
@@ -55,6 +59,8 @@ class DSU {
                 swap(u, v); // u is smaller, then root[u] = v
             root[u] = v; // rep of the smaller is the bigger representative 
             sze[v] += sze[u]; // size of the bigger is increased
+            mn[v] = min(mn[v], mn[u]);
+            mx[v] = max(mx[v], mx[u]);
             return --numSets;
         }
         return false;
@@ -86,12 +92,14 @@ void solve(){
     int n, q; cin >> n >> q;
     DSU d(n);
     while(q--){
-        string qq; int a, b; 
-        cin >> qq >> a >> b;
-        if (qq[0] == 'u'){
-            d.union_set(a, b);
-        } else {
-            cout << (d.same_set(a, b) ? "YES" : "NO") << '\n';
+        string k; int a, b; 
+        cin >> k >> a;
+        if (k[0] == 'u')
+        {    cin >> b;
+            d.union_set(a, b);}
+        else{
+            int u = d.find_set(a);
+            cout << d.mn[u] << ' ' << d.mx[u] << ' ' << d.sze[u] << '\n';
         }
     }
 }

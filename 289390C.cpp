@@ -13,21 +13,21 @@ using ll = long long;
 #define kill(x) return void(cout << (x));
 #define each(x, v) for (auto &(x) : (v))
 void solve();
-
 class DSU {
     private:
     int N = 0, numSets;
     vector<int> root;
-    vector<int> sze;
     bool is_initialized(){
         return N;
     }
     void make_set(int u){
-        assert(is_initialized());
         root[u] = u;
         sze[u] = 1;
+        pts[u] = 0;
     }
     public:
+    vector<ll> pts;
+    vector<int> sze;
     DSU() {}
     DSU(int n) {
         init(n);
@@ -36,6 +36,7 @@ class DSU {
         N = _n + 100;
         root.resize(N);
         sze.resize(N);
+        pts.resize(N);
         numSets = _n;
         for (int i = 0; i<N; i++)
             make_set(i);
@@ -81,17 +82,23 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-
 void solve(){
-    int n, q; cin >> n >> q;
+    int n, q;
+    cin >> n >> q;
     DSU d(n);
     while(q--){
-        string qq; int a, b; 
-        cin >> qq >> a >> b;
-        if (qq[0] == 'u'){
-            d.union_set(a, b);
+        string k; 
+        int a, b; cin >> k >> a;
+        if (k[0] != 'g'){
+            cin >> b;
+        }
+        if (k[0] == 'g'){
+            cout << d.pts[a] << '\n';
+        } else if (k[0] == 'a') {
+            int u = d.find_set(a);
+            d.pts[u] += b * d.size_set(u);
         } else {
-            cout << (d.same_set(a, b) ? "YES" : "NO") << '\n';
+            d.union_set(a, b);
         }
     }
 }
