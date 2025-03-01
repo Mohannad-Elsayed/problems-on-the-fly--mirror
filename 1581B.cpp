@@ -24,6 +24,23 @@ int main() {
 }
 
 void solve(){
-    ll n; cin >> n;
-    cout << max(6ll, n+1)/2 * 5;
+    ll n, m, k; 
+    cin >> n >> m >> k;
+    ll mx = (n * (n-1))/2;
+    if (m < n-1 || m > mx)
+        kill("NO");
+    ll d = -1;
+    if (!m)
+        d = 0;
+    else if (m == mx)
+        d = 1;
+    else
+        d = 2;
+    k--;
+
+    assert(d != -1);
+
+    if (m <= mx && d < k)
+        kill("YES");
+    kill("NO");
 }
