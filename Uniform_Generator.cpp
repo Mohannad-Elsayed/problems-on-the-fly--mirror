@@ -1,4 +1,4 @@
-// #define ONLINE_JUDGE
+#define ONLINE_JUDGE
 #include "bits/stdc++.h"
 using namespace std;
 #ifndef ONLINE_JUDGE
@@ -16,7 +16,7 @@ void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--){
         solve();
         if(tt) cout << '\n';
@@ -24,5 +24,16 @@ int main() {
 }
 
 void solve(){
-    
+    int n, m, g;
+    while (cin >> n >> m){
+        g = __gcd(n, m) - 1;
+        if (g){
+            cout << setw(10) << n << 
+                setw(10) << m << "    Bad Choice\n\n";
+        }
+        else {
+            cout << setw(10) << n << 
+                setw(10) << m << "    Good Choice\n\n";
+        }
+    }
 }

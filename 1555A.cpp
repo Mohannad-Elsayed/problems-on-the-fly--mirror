@@ -24,5 +24,14 @@ int main() {
 }
 
 void solve(){
-    
+    ll n, ans = LLONG_MAX; cin >> n;
+    // map<int, int> mp {{6, 15}, {8, 20}, {10, 25}};
+    // for(ll x : {6, 8, 10}){
+    //     ll curr = (n/x) * mp[x];
+    //     ll md = n%x;
+    //     curr += bool(md) * (md < 7 ? mp[6] : (md < 9 ? mp[8] : mp[10]));
+    //     ans = min(ans, curr);
+    // }
+    // cout << ans;
+    cout << (n/6 + bool(n%6)) * 15;
 }

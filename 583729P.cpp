@@ -24,5 +24,15 @@ int main() {
 }
 
 void solve(){
+    int n, cnt = 0; cin >> n;
+    vector<int> v(n), freq(int(2e5+10)), pfx(n+1);
+    each(i, v)
+        cin >> i;
+    
+    for (int i = 1; i < n+1; i++){
+        cnt += !freq[v[i] + int(1e5)];
+        pfx[i] += cnt + pfx[i-1];
+        freq[v[i] + int(1e5)]++;
+    }
     
 }

@@ -24,5 +24,20 @@ int main() {
 }
 
 void solve(){
-    
+    int n; cin >> n;
+    vector<ll> v(n);
+    each(i, v) cin >> i;
+    ll mod, i;
+    for (mod = 2, i = 1; i < 62; i++, mod <<= 1) { // change to << 1
+        set<ll> ste;
+        each(i, v) ste.insert(i%mod);
+        vector<ll> mds(n);
+        for (int i = 0; i<n; i++)
+            mds[i] = v[i]%mod;
+        if (ste.size() == 2) {
+            print(mds);
+            kill(mod);
+        }
+    }
+    print(mod);
 }

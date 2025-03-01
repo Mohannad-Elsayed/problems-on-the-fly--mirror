@@ -24,5 +24,25 @@ int main() {
 }
 
 void solve(){
-    
+    int n, a, b;
+    cin >> n >> a >> b;
+    a--, b--;
+    vector<vector<int>> g(n);
+    for (int i = 0; i+1 < n; i++){
+        int u, v; cin >> u >> v;
+        u--, v--;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    vector<int> vis(n);
+    function<void(int)> dfs = [&](int u){
+        if (vis[u])
+            return;
+        vis[u] = 1;
+        each(v, g[u])
+            dfs(v);
+        cout << u+1 << ' ';
+    };
+    dfs(b);
+    // cout << b;
 }

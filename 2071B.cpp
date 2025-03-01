@@ -22,7 +22,30 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-
+bool issqrt(ll n){
+    ll sq = sqrtl(n);
+    return sq*sq == n;
+}
 void solve(){
-    
+    ll n; cin >> n;
+    if (issqrt(n*(n+1)/2))
+        kill(-1);
+    vector<int> v(n);
+    iota(all(v), 1);
+    while(true){
+        random_shuffle(all(v));
+        ll s = 0, b = 1;
+        for (int i = 0; i<n; i++){
+            s += v[i];
+            if (issqrt(s)){
+                b = 0;
+                break;
+            }
+        }
+        if (b){//
+            each(i, v)
+                cout << i << ' ';
+            return;
+        }
+    }
 }

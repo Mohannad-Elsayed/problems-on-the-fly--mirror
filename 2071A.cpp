@@ -24,5 +24,10 @@ int main() {
 }
 
 void solve(){
-    
+    int n;
+    cin >> n;
+    n--;
+    if (n%3)
+        kill("NO");
+    kill("YES");
 }

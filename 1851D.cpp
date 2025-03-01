@@ -4,8 +4,8 @@ using namespace std;
 #ifndef ONLINE_JUDGE
     #include "cleanup/debug.h"
 #else
-    #define print(...) 69
-    #define printarr(...) 69
+    #define print(...)
+    #define printarr(...)
 #endif
 using ll = long long;
 #define all(x) (x).begin(), (x).end()

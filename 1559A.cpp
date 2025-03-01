@@ -24,5 +24,10 @@ int main() {
 }
 
 void solve(){
-    
+    int n, ans = -1; cin >> n;
+    while(n--){
+        int t; cin >> t;
+        ans &= t;
+    }
+    cout << ans;
 }

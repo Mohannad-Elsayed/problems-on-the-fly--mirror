@@ -16,7 +16,7 @@ void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--){
         solve();
         if(tt) cout << '\n';
@@ -24,5 +24,24 @@ int main() {
 }
 
 void solve(){
-    
+    int N;
+    while (cin >> N && N){
+        // int n; cin >> n;
+        vector<int> v(N), stk, ans;
+        each(i, v)
+            cin >> i;
+        
+        each(i, v){
+            while(stk.size() && stk.back() < i){
+                ans.push_back(stk.back());
+                stk.pop_back();
+            }
+            stk.push_back(i);
+            print(stk);
+        }
+        while(stk.size())
+            ans.push_back(stk.back()), stk.pop_back();
+        cout << (is_sorted(all(ans)) ? "yes" : "no") << '\n';
+    }
+
 }

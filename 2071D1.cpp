@@ -24,5 +24,8 @@ int main() {
 }
 
 void solve(){
-    
+    ll n, l, r; cin >> n >> l >> r;
+    vector<int> v(n);
+    each(i,v)
+        cin >> i;
 }

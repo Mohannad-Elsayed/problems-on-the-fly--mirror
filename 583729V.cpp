@@ -16,7 +16,7 @@ void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--){
         solve();
         if(tt) cout << '\n';
@@ -24,5 +24,19 @@ int main() {
 }
 
 void solve(){
-    
+    int n, x, cnt = 0; cin >> n >> x;
+    int pfx[n+1]{};
+    for (int i = 1; i<=n; i++){
+        int t; cin >> t;
+        pfx[i] += t + pfx[i-1];
+    }
+    // each(i, pfx)
+    //     cout << i << ' ';
+    for (int i = 0; i <= n; i++){
+        for (int j = i+1; j <= n; j++){
+            if (pfx[j] - pfx[i] == x)
+                cnt++;
+        }
+    }
+    cout << cnt;
 }

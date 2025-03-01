@@ -1,4 +1,4 @@
-// #define ONLINE_JUDGE
+#define ONLINE_JUDGE
 #include "bits/stdc++.h"
 using namespace std;
 #ifndef ONLINE_JUDGE
@@ -16,7 +16,9 @@ void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
+    freopen("word.in", "r", stdin);
+    freopen("word.out", "w", stdout);
     while(tt--){
         solve();
         if(tt) cout << '\n';
@@ -24,5 +26,19 @@ int main() {
 }
 
 void solve(){
+    int n, k; 
+    cin >> n >> k;
+    vector<string> v(n);
+    each(i, v)
+        cin >> i;
     
+    cout << v.front();
+    int current = v.front().size();
+    for (int i = 1; i < n; i++){
+        if (current + v[i].size() > k)
+            current = 0;
+        cout << (current ? ' ' : '\n');
+        cout << v[i];
+        current += v[i].size();
+    }
 }

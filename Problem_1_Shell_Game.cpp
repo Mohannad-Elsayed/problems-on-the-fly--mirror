@@ -1,4 +1,4 @@
-// #define ONLINE_JUDGE
+#define ONLINE_JUDGE
 #include "bits/stdc++.h"
 using namespace std;
 #ifndef ONLINE_JUDGE
@@ -16,13 +16,27 @@ void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
+    freopen("shell.in", "rt", stdin);
+    freopen("shell.out", "wt", stdout);
     while(tt--){
         solve();
         if(tt) cout << '\n';
     }return 0;
 }
-
+struct step {
+    int a, b, g;
+};
 void solve(){
-    
+    int n; cin >> n;
+    vector<int> shells(4), guess(4);
+    iota(all(shells), 0);
+    for (int i = 0; i<n; i++){
+        int a, b, g;
+        cin >> a >> b >> g;
+        swap(shells[a], shells[b]);
+        guess[shells[g]]++;
+        print(guess);
+    }
+    cout << *max_element(all(guess));
 }
