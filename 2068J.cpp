@@ -12,8 +12,6 @@ using ll = long long;
 #define rall(x) (x).rbegin(), (x).rend()
 #define kill(x) return void(cout << (x));
 #define each(x, v) for (auto &(x) : (v))
-template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
-template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
 void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
@@ -27,5 +25,27 @@ int main() {
 }
 
 void solve(){
-    
+    int n; string s; 
+    cin >> n >> s;
+    int cnt = 0;
+    n*=2;
+    for (int i = 0; i<n; i++){
+        if (s[i] == '-')
+            continue;
+        for (int j = i+1; j < n; j++){
+            if (s[j] == 'W'){
+                s[i] = s[j] = '-';
+                break;
+            }
+        }
+    }
+    print(s);
+    n/=2;
+    /*
+        WWWWRRWRRRRRWRRWRWRRWRRWWWWWWWRWWRWWRRRR
+    */
+    for(int i = 0; i<n; i++)
+        if (s[i] != '-')
+            kill("NO");
+    cout << "YES";
 }

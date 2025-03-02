@@ -12,12 +12,9 @@ using ll = long long;
 #define rall(x) (x).rbegin(), (x).rend()
 #define kill(x) return void(cout << (x));
 #define each(x, v) for (auto &(x) : (v))
-template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
-template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
 void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
-    cin.exceptions(cin.failbit);
     int tt = 1;
     cin >> tt;
     while(tt--){
@@ -27,5 +24,12 @@ int main() {
 }
 
 void solve(){
-    
+    // x = 11*a + 11*c + d*111
+    int x; cin >> x;
+    while(x%11){
+        x -= 111;
+        if (x < 0)
+            kill("NO");
+    }
+    kill("YES");
 }

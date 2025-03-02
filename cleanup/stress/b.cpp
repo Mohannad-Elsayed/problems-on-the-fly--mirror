@@ -15,6 +15,7 @@ using ll = long long;
 void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
+    cin.exceptions(cin.failbit);
     int tt = 1;
     // cin >> tt;
     while(tt--){
@@ -24,24 +25,21 @@ int main() {
 }
 
 void solve(){
-    int N;
-    while (cin >> N && N){
-        // int n; cin >> n;
-        vector<int> v(N), stk, ans;
-        each(i, v)
-            cin >> i;
-        
-        each(i, v){
-            while(stk.size() && stk.back() < i){
-                ans.push_back(stk.back());
-                stk.pop_back();
+    int n, ans = 1e7; string s; 
+    cin >> n >> s;
+    for (int i = 0; i<n; i++){
+        for (int j = i+1; j < n; j++){
+            string ss;
+            for (int k = i; k <= j; k++)
+                ss.push_back(s[k]);
+            int ca = count(all(ss), 'a');
+            int cb = count(all(ss), 'b');
+            int cc = count(all(ss), 'c');
+            if (ca > cb && ca > cc){
+                print(ss, ans, j-i+1);
+                ans = min(ans, j-i+1);
             }
-            stk.push_back(i);
-            print(stk);
         }
-        while(stk.size())
-            ans.push_back(stk.back()), stk.pop_back();
-        cout << (is_sorted(all(ans)) ? "yes" : "no") << '\n';
     }
-
+    cout << (ans > 1e6 ? -1 : ans);
 }
