@@ -27,20 +27,28 @@ int main() {
 }
 
 void solve(){
-    int n; string s, ss; 
-    cin >> n >> s;
-    n = s.size();
-    ss = s;
-    sort(all(ss));
-    vector<int> ans;
-    for (int i = 0; i<n; i++){
-        if (s[i] != ss[i])
-            ans.push_back(i);
+    ll n; cin >> n;
+    deque<ll> pfx(n), sfx(n);
+    each(i, sfx)
+        cin >> i;
+    for (int i = n-2; ~i; i--)
+        sfx[i] += sfx[i+1];
+    cin >> pfx[0];
+    for (int i = 1; i<n; i++){
+        cin >> pfx[i];
+        pfx[i] += pfx[i-1];
     }
-    cout << bool(ans.size());
-    if (ans.size()){
-        cout << '\n' << ans.size() << ' ';
-        each(i, ans)
-            cout << ++i << ' ';
+    print(pfx);
+    print(sfx);
+
+    pfx.emplace_back(0);
+    pfx.emplace_front(0);
+    sfx.emplace_back(0);
+    sfx.emplace_front(0);
+    ll ans = 1e17;
+    for (int i = 1; i<=n; i++){
+        print(sfx[i+1], pfx[i-1]);
+        chmin(ans, max(sfx[i+1], pfx[i-1]));
     }
+    cout << ans;
 }

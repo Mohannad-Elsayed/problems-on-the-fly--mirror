@@ -19,6 +19,7 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
     int tt = 1;
+    freopen("game.in", "rt", stdin);
     cin >> tt;
     while(tt--){
         solve();
@@ -27,20 +28,21 @@ int main() {
 }
 
 void solve(){
-    int n; string s, ss; 
-    cin >> n >> s;
-    n = s.size();
-    ss = s;
-    sort(all(ss));
-    vector<int> ans;
-    for (int i = 0; i<n; i++){
-        if (s[i] != ss[i])
-            ans.push_back(i);
-    }
-    cout << bool(ans.size());
-    if (ans.size()){
-        cout << '\n' << ans.size() << ' ';
-        each(i, ans)
-            cout << ++i << ' ';
-    }
+    int n; cin >> n;
+    vector<ll> v(n), pfx(n), sfx(n);
+    each(i, v)
+        cin >> i;
+    pfx[0] = v[0];
+    for (int i = 1; i < n; i++)
+        pfx[i] += pfx[i-1] + v[i];
+    sfx[n-1] = v[n-1];
+    for (int i = n-2; ~i; i--)
+        sfx[i] += sfx[i+1] + v[i];
+    print(pfx);
+    print(sfx);
+    ll comp = -1, saeed;
+    for (int i = 0; i<n; i++)
+        chmax(comp, min(pfx[i], sfx[i]));
+    saeed = pfx.back() - comp;
+    cout << (comp > saeed ? "Compiler" : (comp < saeed ? "Saeed" : "Tie"));
 }

@@ -22,25 +22,27 @@ int main() {
     cin >> tt;
     while(tt--){
         solve();
-        if(tt) cout << '\n';
+        // i/
     }return 0;
 }
 
 void solve(){
-    int n; string s, ss; 
-    cin >> n >> s;
-    n = s.size();
-    ss = s;
-    sort(all(ss));
-    vector<int> ans;
+    int n; cin >> n;
+    vector<int> v(n);
+    each(i, v)
+        cin >> i;
+    
+    string s = "abcdefghijklmnopqrstuvwxyz";
+    s += s;
+    
+    vector<string> ans(n+1, s);
     for (int i = 0; i<n; i++){
-        if (s[i] != ss[i])
-            ans.push_back(i);
+        // lsp between ans[i] and ans[i+1] = v[i]
+        for (int k = 0; k < v[i]; k++)
+            ans[i+1][k] = ans[i][k];
+        ans[i+1][v[i]] = ans[i][v[i]] + 1;
+        ans[i+1][v[i]] = ((ans[i+1][v[i]]-'a') + 26) % 26 + 'a';
     }
-    cout << bool(ans.size());
-    if (ans.size()){
-        cout << '\n' << ans.size() << ' ';
-        each(i, ans)
-            cout << ++i << ' ';
-    }
-}
+    each(i, ans)
+        cout << i << '\n';
+} 

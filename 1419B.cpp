@@ -27,20 +27,12 @@ int main() {
 }
 
 void solve(){
-    int n; string s, ss; 
-    cin >> n >> s;
-    n = s.size();
-    ss = s;
-    sort(all(ss));
-    vector<int> ans;
-    for (int i = 0; i<n; i++){
-        if (s[i] != ss[i])
-            ans.push_back(i);
+    ll n, p2 = 1, val = (p2 * (p2+1))/2, ans = 0; cin >> n;
+    while(n >= val){
+        n -= val;
+        ans++;
+        p2 = p2*2+1;
+        val = (p2 * (p2+1))/2;
     }
-    cout << bool(ans.size());
-    if (ans.size()){
-        cout << '\n' << ans.size() << ' ';
-        each(i, ans)
-            cout << ++i << ' ';
-    }
+    cout << ans;
 }

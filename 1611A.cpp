@@ -27,20 +27,15 @@ int main() {
 }
 
 void solve(){
-    int n; string s, ss; 
-    cin >> n >> s;
-    n = s.size();
-    ss = s;
-    sort(all(ss));
-    vector<int> ans;
-    for (int i = 0; i<n; i++){
-        if (s[i] != ss[i])
-            ans.push_back(i);
-    }
-    cout << bool(ans.size());
-    if (ans.size()){
-        cout << '\n' << ans.size() << ' ';
-        each(i, ans)
-            cout << ++i << ' ';
-    }
+    string s; cin >> s;
+    int have = 0;
+    each(ch, s)
+        if (ch%2 == 0)
+            have = 1;
+    if (!have)
+        kill(-1);
+    if (s.back() % 2 == 0)
+        kill(0);
+    int cnt = 1 + s.front() % 2;
+    kill(cnt);
 }

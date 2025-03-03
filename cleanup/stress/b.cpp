@@ -1,45 +1,111 @@
-#define ONLINE_JUDGE
-#include "bits/stdc++.h"
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <bits/stdc++.h>
+#include <chrono>
+#include <iostream>
+#include <iomanip>
+
 using namespace std;
-#ifndef ONLINE_JUDGE
-    #include "../debug.h"
-#else
-    #define print(...) 69
-    #define printarr(...) 69
-#endif
-using ll = long long;
+using namespace __gnu_pbds;
+typedef long long ll;
+#define nl <<'\n'
+#define vll vector<ll>
+#define vi vector<int>
+#define pb(x) push_back(x)
+#define dbg(x) cout<<#x<<" = "<<x<<nl
+#define sp <<' '
+#define get(n, t) get<n>(t)
+#define geti(n, i, t) get<n>(t)=i
+#define INF 2e18
 #define all(x) (x).begin(), (x).end()
-#define rall(x) (x).rbegin(), (x).rend()
-#define kill(x) return void(cout << (x));
-#define each(x, v) for (auto &(x) : (v))
-void solve();
-int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    cin.exceptions(cin.failbit);
-    int tt = 1;
-    // cin >> tt;
-    while(tt--){
-        solve();
-        if(tt) cout << '\n';
-    }return 0;
+#define sz(x) ((ll)(x).size())
+#define ll long long
+#define int long long
+#define see(v) for(auto &i : v)cin>>i
+#define fastio ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr);
+#define f first
+#define ss second
+#define pc(x) __builtin_ctz(x)
+#define  no cout<<"NO" nl;
+#define  yes cout<<"YES" nl;
+#define pii pair<int , int>
+#define vpii vector<pii>
+//Orderd set
+template<class T> using ordered_set = tree<T, null_type, less<T>,
+        rb_tree_tag, tree_order_statistics_node_update>;
+//multi ordered set
+template<class T> using multi_ordered_set = tree<T, null_type, less_equal<T>,
+        rb_tree_tag, tree_order_statistics_node_update>;
+double sTime;
+
+void File() {
+// #ifndef ONLINE_JUDGE
+//     freopen("in.txt", "r", stdin);
+//     freopen("out.txt", "w", stdout);
+//     sTime = clock();
+// #endif
 }
 
-void solve(){
-    int n, ans = 1e7; string s; 
-    cin >> n >> s;
-    for (int i = 0; i<n; i++){
-        for (int j = i+1; j < n; j++){
-            string ss;
-            for (int k = i; k <= j; k++)
-                ss.push_back(s[k]);
-            int ca = count(all(ss), 'a');
-            int cb = count(all(ss), 'b');
-            int cc = count(all(ss), 'c');
-            if (ca > cb && ca > cc){
-                print(ss, ans, j-i+1);
-                ans = min(ans, j-i+1);
+void endFile() {
+// #ifndef ONLINE_JUDGE
+//     double eTime = clock();
+//     double TIME_TAKEN = double(eTime - sTime) / double(CLOCKS_PER_SEC);
+//     cout << "\n//Time taken = " << fixed << std::setprecision(5) << TIME_TAKEN << "ms\n";
+// #endif
+}
+/*
+ * __builtin_clz(x): the number of zeros at the beginning of the number
+ * __builtin_ctz(x): the number of zeros at the end of the number
+ * __builtin_parity(x): the parity (even or odd) of the number of ones
+ */
+//##############################################################################################################
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
+char di[] = {'D', 'L', 'U', 'R'};
+
+//const int N = 1e3 + 1;
+//const ll mod = 1e9 + 7;
+
+//const int N = 2e5 + 5;
+void solve() {
+    int n; cin>>n;
+    vi a(n);
+    for(auto& i: a) cin>>i;
+    int mx = INT_MIN;
+    int ans = INT_MAX;
+    for(int l = 0; l < n; l++)
+    {
+        int cnt = a[l];
+        for(int r = l; r < n; r++)
+        {
+            cnt |= a[r];
+            if(cnt > mx)
+            {
+                mx = cnt;
+                ans = r-l+1;
+            }
+            else if(cnt == mx)
+            {
+                ans = min(ans , r-l +1 );
             }
         }
     }
-    cout << (ans > 1e6 ? -1 : ans);
+    cout<<ans nl;
+
+}
+
+
+signed main() {
+
+    fastio
+    File();
+    int t = 1;
+    cin >> t;
+    int T = t;
+    while (t--) {
+        solve();
+    }
+    endFile();
+
+    return 0;
 }

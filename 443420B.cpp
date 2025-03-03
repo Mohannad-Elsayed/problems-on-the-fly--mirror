@@ -1,4 +1,4 @@
-// #define ONLINE_JUDGE
+#define ONLINE_JUDGE
 #include "bits/stdc++.h"
 using namespace std;
 #ifndef ONLINE_JUDGE
@@ -27,20 +27,22 @@ int main() {
 }
 
 void solve(){
-    int n; string s, ss; 
-    cin >> n >> s;
-    n = s.size();
-    ss = s;
-    sort(all(ss));
-    vector<int> ans;
-    for (int i = 0; i<n; i++){
-        if (s[i] != ss[i])
-            ans.push_back(i);
+    ll n, k; 
+    cin >> n >> k;
+    ll row = (n+k-1)/k;
+    if (row%2)
+        kill("YES");
+    
+    if (k%2 == 0){
+        print(n, k);
+        kill("NO");
     }
-    cout << bool(ans.size());
-    if (ans.size()){
-        cout << '\n' << ans.size() << ' ';
-        each(i, ans)
-            cout << ++i << ' ';
-    }
+
+    ll val1 = row * k;
+    ll val2 = val1 - k + 1;
+    print(val1, val2);
+    if (n == (val1+val2)/2)
+        kill("YES");
+    print(n, k);
+    kill("NO");
 }
