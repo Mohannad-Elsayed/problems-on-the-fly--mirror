@@ -26,6 +26,31 @@ int main() {
     }return 0;
 }
 
-void solve() {
-    
+void solve(){
+    int n, k; string s; 
+    cin >> n >> k >> s;
+    int cnts = count(all(s), '*');
+    if (cnts < 3)
+        kill(cnts);
+    deque<int> indices;
+    for (int i = 0; i<n; i++)
+        if (s[i] == '*')
+            indices.emplace_back(i);
+    print(indices);
+    indices.pop_front();
+    indices.pop_back();
+    int ans = 2;
+    for (int i = 0; i<indices.size(); i++){
+        int curr = -1;
+        for (int j = i+1; j < indices.size(); j++){
+            if (indices[j] - indices[i] >= k){
+                if (curr != -1)
+                    ans++;
+                i = j-1;
+                break;
+            }
+            curr = indices[j];
+        }
+    }
+    cout << ans;
 }

@@ -26,6 +26,21 @@ int main() {
     }return 0;
 }
 
-void solve() {
+void solve(){
+    int n; cin >> n;
+    vector<int> v(n);
+    each(i, v)
+        cin >> i;
     
+    cout << n-1 << '\n';
+    int mni = min_element(all(v)) - v.begin();
+    int mnv = v[mni];
+    for (int i = 0; i<n; i++){
+        if (i == mni)
+            continue;
+        cout << i+1 << ' ' << mni+1 << ' ' << mnv + abs(i-mni) << ' ' << mnv << '\n';
+    }
+    int n; cin >> n; 
+    string s; cin >> s;
+     
 }

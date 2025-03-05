@@ -17,7 +17,6 @@ template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 
 void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
-    cin.exceptions(cin.failbit);
     int tt = 1;
     cin >> tt;
     while(tt--){
@@ -27,5 +26,23 @@ int main() {
 }
 
 void solve() {
-    
+    int n, k; cin >> n >> k;
+    vector<int> v(n), ans(n), p, cnt(n+1);
+    for (int i = 0; i<n; i++){
+        cin >> v[i];
+        cnt[v[i]]++;
+        if (cnt[v[i]] <= k)
+            p.push_back(i);
+        
+    }
+    // print(p.size());
+    while(p.size()%k)
+        p.pop_back();
+    sort(all(p), [&](int i, int j){
+        return v[i] > v[j];
+    });
+    for (int i = 0; i<p.size(); i++)
+        ans[p[i]] = i%k + 1;
+    each(i, ans)
+        cout << i << ' ';
 }

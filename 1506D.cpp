@@ -26,6 +26,15 @@ int main() {
     }return 0;
 }
 
-void solve() {
-    
+void solve(){
+    int n, t;
+    cin >> n;
+    map<int, int> mp;
+    for (int i = 0; i<n; i++)
+        cin >> t, mp[t]++;
+    vector<int> v;
+    for (auto [x, y] : mp)
+        v.push_back(y);
+    sort(all(v));
+    cout << max(n%2, v.back() - accumulate(v.begin(), v.end()-1, 0));
 }

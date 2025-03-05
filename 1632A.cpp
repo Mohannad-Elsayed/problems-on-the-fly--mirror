@@ -26,6 +26,10 @@ int main() {
     }return 0;
 }
 
-void solve() {
-    
+void solve(){
+    int n; string s; 
+    cin >> n >> s;
+    if (n < 2 || (n == 2 && (s == "01" || s == "10")))
+        kill("YES");
+    kill("NO");
 }

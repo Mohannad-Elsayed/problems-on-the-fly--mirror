@@ -26,6 +26,10 @@ int main() {
     }return 0;
 }
 
-void solve() {
-    
+void solve(){
+    int n; cin >> n;
+    vector<ll> v(n);
+    each(i, v)
+        cin >> i;
+    cout << (accumulate(all(v), 0ll)%n) * (n - (accumulate(all(v), 0ll)%n));
 }

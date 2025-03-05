@@ -25,7 +25,17 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-
-void solve() {
-    
+int cntb(int x, int b){
+    int cycle = (1 << (b+1));
+    int ans = (x/cycle) * (1 << b);
+    int rem = x%cycle;
+    ans += max(0, rem - (1<<b)+1);
+    return ans;
+}
+void solve(){
+    int l, r; cin >> l >> r;
+    int mx = -1;
+    for (int i = 0; i<20; i++)
+        mx = max(mx, cntb(r, i) - cntb(l-1, i));
+    cout << r-l+1-mx;
 }
