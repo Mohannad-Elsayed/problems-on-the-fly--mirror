@@ -26,38 +26,13 @@ int main() {
     }return 0;
 }
 
-void solve(){
-    int n, k;
-    cin >> n >> k;
-    deque<int> v(n);
-    each(i, v)
-        cin >> i;
+void solve() {
+    int n, m; cin >> n >> m;
+    vector<int> v;
+    for (int i = 0; i<n; i++)
+        for (int j = 0; j<m; j++)
+            v.push_back(max(i, n-1-i) + max(j, m-1-j));    
     sort(all(v));
-    int ans = 0;
-    while(k--){
-        print("b", v,ans);
-        int a = v.front(), b = -1;
-        while(!v.front()) v.pop_front();
-        for (int i = 1; i<v.size(); i++){
-            if (v[i] && v[i] > a){
-                b = v[i];
-                v[i] = 0;
-                v.pop_front();
-                break;
-            }
-        }
-        if (b == -1){
-            v.pop_front();
-            each(i, v){
-                if (i){
-                    i = 0;
-                    break;
-                }
-            }
-            ans++;
-        }
-        print("a", v, ans);
-    }
-    print(v, ans);
-    cout << ans + accumulate(all(v), 0ll);
+    for (int i = 0; i<n*m; i++)
+        cout << v[i] << ' ';
 }

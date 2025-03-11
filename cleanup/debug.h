@@ -2,7 +2,7 @@
 #undef _GLIBCXX_DEBUG
 
 using namespace std;
-
+string to_string(char ch);
 template <typename A, typename B>
 string to_string(pair<A, B> p);
 
@@ -16,6 +16,11 @@ string to_string(const string& s) {
     return '"' + s + '"';
 }
 
+string to_string(char ch) {
+    string s;
+    s += ch;
+    return s;
+}
 string to_string(const char* s) {
     return to_string((string) s);
 }

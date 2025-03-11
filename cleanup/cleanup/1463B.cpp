@@ -26,13 +26,11 @@ int main() {
     }return 0;
 }
 
-void solve(){
-    ll n, k, ans; cin >> n >> k;
-
-    if (n >= k)
-        ans = (k * (k+1))/2;
-    else
-        ans =(n*(n-1))/2+1;
-
-    cout << ans;
+#define int ll
+void solve() {  
+    int n, t; cin >> n;
+    while(n--){
+        cin >> t;
+        cout << (1 << __lg(t)) << ' ';
+    }
 }

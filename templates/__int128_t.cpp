@@ -7,8 +7,6 @@ istream &operator>>(istream &is,__int128_t &v) {
     return is;
 }
 
-#ifndef INT128_T_OSTREAM_OVERLOAD
-#define INT128_T_OSTREAM_OVERLOAD
 ostream &operator<<(ostream &os,const __int128_t &v) {
     if(v==0) return (os<<"0");
     __int128_t num=v;
@@ -18,4 +16,3 @@ ostream &operator<<(ostream &os,const __int128_t &v) {
     reverse(all(s));
     return (os<<s);
 }
-#endif
