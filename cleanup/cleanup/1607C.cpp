@@ -15,35 +15,32 @@ using ll = long long;
 template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
 template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
 void solve();
-#undef RAND_MAX
-#define RAND_MAX int(1e9)
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
-    srand(time(0));
     int tt = 1;
-    // cout << RAND_MAX;
-    // exit(0);
     cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
     }return 0;
 }
-int check(int a, int b, int c = 0) {
-    c = a^b;
-    return (a+b > c && a+c > b && b+c > a);
-}
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<> uid(1, int(1e9));
+
 void solve() {
+    ll accu = 0;
+    ll mx = -1E11;
+    priority_queue<ll, vector<ll>, greater<ll>> pq;
     int n; cin >> n;
-    for (int iter = 0; iter < 200; iter++) {
-        int c = uid(rng)%n + 1;
-        if (c == n)
-            continue;
-        if (check(n, c))
-            kill(c);
+    vector<ll> v(n);
+    each(i, v)
+        cin >> i, pq.push(i);
+    while (pq.size()) {
+        ll mn = pq.top();
+        pq.pop();
+        print(mn, accu, mn-accu);
+        chmax(mx, mn-accu);
+        accu += mn-accu;
     }
-    cout << -1;
+    cout << mx;
+    
 }

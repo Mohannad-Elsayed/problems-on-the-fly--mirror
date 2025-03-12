@@ -42,12 +42,14 @@ void solve() {
         if (s[i] == 'R') {
             if (v[i] > n)
                 kill("NO");
-            reds.insert(v[i]);
+            if (v[i] > 0 && v[i] <= n && !perm[v[i]])
+                reds.insert(v[i]);
         }
         if (s[i] == 'B') {
             if (v[i] < 1)
                 kill("NO");
-            blues.insert(v[i]);
+            if (v[i] > 0 && v[i] <= n && !perm[v[i]])
+                blues.insert(v[i]);
         }
     }
     print(reds);
@@ -57,6 +59,8 @@ void solve() {
             continue;
         auto itr = reds.lower_bound(i);
         auto itb = blues.lower_bound(i);
+        print(i, itr != reds.end(), itb != blues.end());
+        print(i, *itr, *itb);
         if (itr != reds.end() && itb != blues.end()){
             int rr = *itr, bb = *itb;
             if (abs(i-rr) > abs(i-bb)) {
@@ -68,7 +72,6 @@ void solve() {
                 continue;
             }
         }
-        print(i, *itr, *itb);
         if (itr != reds.end()) {
             reds.erase(itr);
             continue;

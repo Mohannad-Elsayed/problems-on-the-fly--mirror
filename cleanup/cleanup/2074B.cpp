@@ -25,24 +25,13 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-template<typename T>
-using mxpq =  priority_queue<T>;
-template<typename T>
-using mnpq =  priority_queue<T, vector<T>, greater<T>>;
+
 void solve() {
-    int n; cin >> n;
-    mnpq<int> mste;
-    for (int i = 0; i<n; i++){
+    ll n, s = 0; cin >> n;
+    s = -n+1;
+    while(n--) {
         int t; cin >> t;
-        mste.push(t);
+        s += t;
     }
-    // print(mste);
-    while(mste.size() > 1) {
-        int a = mste.top();
-        mste.pop();
-        int b = mste.top();
-        mste.pop();
-        mste.push(a+b-1);
-    }
-    cout << mste.top();
+    cout << s;
 }

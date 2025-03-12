@@ -25,28 +25,7 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-bool validate(deque<ll> &seq) { 
-    ll m = 1, s = 0;
-    for (int i = 1; i <seq.size(); i++) {
-        s += m * seq[i];
-        m *= -1;
-    }
-    set<ll> ste (seq.begin(), seq.end());
-    return (ste.size() == seq.size()) && seq.front() == s;
-}
 
-#define int ll
 void solve() {
-    ll n; cin >> n;
-    deque<ll> seq(2*n+1), oseq;
-    each(i, seq)
-        cin >> i;
-    oseq = seq;
-    sort(all(seq));
-    print("s", seq);
-    do {
-        if (validate(seq))
-            print(seq);
-    } while(next_permutation(all(seq)));
-
+    
 }

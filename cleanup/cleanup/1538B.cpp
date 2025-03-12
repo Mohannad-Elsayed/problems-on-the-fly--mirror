@@ -15,35 +15,27 @@ using ll = long long;
 template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
 template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
 void solve();
-#undef RAND_MAX
-#define RAND_MAX int(1e9)
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
-    srand(time(0));
     int tt = 1;
-    // cout << RAND_MAX;
-    // exit(0);
     cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
     }return 0;
 }
-int check(int a, int b, int c = 0) {
-    c = a^b;
-    return (a+b > c && a+c > b && b+c > a);
-}
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<> uid(1, int(1e9));
+
 void solve() {
     int n; cin >> n;
-    for (int iter = 0; iter < 200; iter++) {
-        int c = uid(rng)%n + 1;
-        if (c == n)
-            continue;
-        if (check(n, c))
-            kill(c);
-    }
-    cout << -1;
+    vector<int> v(n);
+    each(i, v)
+        cin >> i;
+    if (accumulate(all(v), 0ll)%n)
+        kill(-1);
+    int val = accumulate(all(v), 0ll)/n;
+    sort(rall(v));
+    while(v.size() && v.back() <= val)
+        v.pop_back();
+    cout << v.size();
 }

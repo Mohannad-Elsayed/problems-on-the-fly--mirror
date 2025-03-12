@@ -22,9 +22,8 @@ void sieve(int maximum) {
         }
 }
 
-map<int, int> factor(int _n){
+map<int, int> factorlg(int _n){
     map<int, int> fac;
-    assert(_n >= 2 && "Number must be > 2 to factorize!");
     while(smallest_factor[_n]){
         fac[smallest_factor[_n]]++;
         _n /= smallest_factor[_n];
@@ -34,7 +33,6 @@ map<int, int> factor(int _n){
 
 map<ll, int> factor(ll _n){
     map<ll, int> fac;
-    assert(_n >= 2 && "Number must be > 2 to factorize!");
     for (int i = 0; (ll)primes[i] * primes[i] <= _n; i++)
         while(_n % primes[i] == 0)
             fac[primes[i]]++, _n /= primes[i];

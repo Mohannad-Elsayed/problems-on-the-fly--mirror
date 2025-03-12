@@ -3,9 +3,10 @@ import random
 import time
 
 def generate_test_case(n):
-    n = random.randint(1, 20000)
-    a = [random.randint(1, 1000) for _ in range(n)]
-    return f"{n}\n{' '.join(map(str, a))}"
+    n = random.randint(1, 20)
+    a = [random.randint(-n, n) for _ in range(n)]
+    colors = ''.join(random.choice('BR') for _ in range(n))
+    return f"{n}\n{' '.join(map(str, a))}\n{colors}"
 
 def run_program(program, input_data):
     """Runs a compiled C++ program with input_data and returns output."""
@@ -18,7 +19,7 @@ def run_program(program, input_data):
     return process.stdout.strip()
 
 def run_two_solutions():
-    test_count = 1000
+    test_count = 1000000
     all_testcases = []
     
     # Collect all test cases

@@ -15,35 +15,30 @@ using ll = long long;
 template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
 template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
 void solve();
-#undef RAND_MAX
-#define RAND_MAX int(1e9)
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
-    srand(time(0));
     int tt = 1;
-    // cout << RAND_MAX;
-    // exit(0);
     cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
     }return 0;
 }
-int check(int a, int b, int c = 0) {
-    c = a^b;
-    return (a+b > c && a+c > b && b+c > a);
-}
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<> uid(1, int(1e9));
+
 void solve() {
     int n; cin >> n;
-    for (int iter = 0; iter < 200; iter++) {
-        int c = uid(rng)%n + 1;
-        if (c == n)
-            continue;
-        if (check(n, c))
-            kill(c);
-    }
-    cout << -1;
+    vector<int> v(n);
+    each(k, v)
+        cin >> k;
+    
+    int mn = min_element(all(v)) - v.begin();
+    int mx = max_element(all(v)) - v.begin();
+    if (mn > mx)
+        swap(mn, mx);
+    print(mn, mx);
+    print(mx+1);
+    print(n-mn);
+    print(mn+n-mx);
+    cout << min({mx+1, n-mn, mn+1+n-mx});
 }

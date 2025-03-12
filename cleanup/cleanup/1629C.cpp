@@ -15,35 +15,48 @@ using ll = long long;
 template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
 template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
 void solve();
-#undef RAND_MAX
-#define RAND_MAX int(1e9)
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
-    srand(time(0));
     int tt = 1;
-    // cout << RAND_MAX;
-    // exit(0);
     cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
     }return 0;
 }
-int check(int a, int b, int c = 0) {
-    c = a^b;
-    return (a+b > c && a+c > b && b+c > a);
-}
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<> uid(1, int(1e9));
+
 void solve() {
     int n; cin >> n;
-    for (int iter = 0; iter < 200; iter++) {
-        int c = uid(rng)%n + 1;
-        if (c == n)
-            continue;
-        if (check(n, c))
-            kill(c);
+    set<int> stemex;
+    for (int i = 0; i<=n+1; i++)
+        stemex.insert(i);
+    
+    vector<int> v(n), ans, suff(n);
+    each(i, v)
+        cin >> i;
+    for (int i = n-1; ~i; i--) {
+        stemex.erase(v[i]);
+        suff.at(i) = *stemex.begin();
     }
-    cout << -1;
+    print(suff);
+    
+    for (int i = 0; i<=n+1; i++)
+        stemex.insert(i);
+    
+    for (int i = 0; i<n;) {
+        int lst = i;
+        for (; lst < n; lst++) {
+            stemex.erase(v[lst]);
+            if (*stemex.begin() == suff[i])
+                break;
+        }
+        ans.push_back(suff[i]);
+        for (;i<=lst;i++)
+            stemex.insert(v[i]);
+        print(i, lst, ans);
+    }
+    cout << ans.size() << '\n';
+    each(i, ans)
+        cout << i << ' ';
 }

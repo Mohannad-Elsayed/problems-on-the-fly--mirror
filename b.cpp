@@ -1,48 +1,63 @@
-#define ONLINE_JUDGE
-#include "bits/stdc++.h"
-using namespace std;
-#ifndef ONLINE_JUDGE
-    #include "cleanup/debug.h"
-#else
-    #define print(...) 69
-    #define printarr(...) 69
-#endif
+#include <bits/stdc++.h>
 using ll = long long;
-#define all(x) (x).begin(), (x).end()
-#define rall(x) (x).rbegin(), (x).rend()
-#define kill(x) return void(cout << (x));
-#define each(x, v) for (auto &(x) : (v))
-template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
-template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
-void solve();
-int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    cin.exceptions(cin.failbit);
-    int tt = 1;
-    cin >> tt;
-    while(tt--) {
-        solve();
-        if(tt) cout << '\n';
-    }return 0;
+using namespace std;
+
+namespace optimizedSolution {
+    int solve(int n)
+    {
+        int lg = __lg(n);
+        if ((1 << lg) == n || (1<<lg) - 1 == n || (1 << (lg+1)) - 1 == n)
+            return(-1);
+        return (1 << lg) -1;
+        
+    }
 }
-template<typename T>
-using mxpq =  priority_queue<T>;
-template<typename T>
-using mnpq =  priority_queue<T, vector<T>, greater<T>>;
-void solve() {
-    int n; cin >> n;
-    mnpq<int> mste;
-    for (int i = 0; i<n; i++){
-        int t; cin >> t;
-        mste.push(t);
+
+namespace bruteforceSolution {
+    int solve(int x) {
+        if ((x & (x - 1)) == 0 || (x & (x + 1)) == 0) {
+            return -1;
+        }
+        
+        int a = std::__lg(x);
+        int b = __builtin_ctz(~x);
+        
+        int y = x ^ (1 << a) ^ (1 << b);
+        return y;
     }
-    // print(mste);
-    while(mste.size() > 1) {
-        int a = mste.top();
-        mste.pop();
-        int b = mste.top();
-        mste.pop();
-        mste.push(a+b-1);
+}
+
+
+void test()
+{
+    int N = (int)1e9 + 1;
+
+    for (int i = 2; i < N; i++) {
+        int optimized = optimizedSolution::solve(i);
+        int correct = bruteforceSolution::solve(i);
+        if (correct == -1 && optimized == -1)
+            continue;
+        
+        if (correct == -1 && optimized != -1) {
+            cout << "At i = " << i << " optimized find an answer while correct didn't!";
+            return;
+        }
+        if (correct != -1 && optimized == -1) {
+            cout << "At i = " << i << " optimized didn't find an answer while there's one!";
+            return;
+        }
+
+        int a = optimized, b = i;
+        int c = a^b;
+        if (!(a+b > c && a+c > b && b+c > a)) {
+            cout << "At i = " << i << " optimized provided incorrect answer: " << optimized;
+            return;
+        }
     }
-    cout << mste.top();
+    
+    cout << "All Numbers Passed!";
+}
+int main() {
+    test();
+    return 0;
 }

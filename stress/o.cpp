@@ -1,50 +1,118 @@
+/***--Nemo_1--***/
 #include <bits/stdc++.h>
-#define int long long
 #define ll long long
-#define ld long double
-#define ull unsigned long long
-#define endl '\n'
-#define NF string::npos
-#define all(v) v.begin(), v.end()
-#define allr(v) v.rbegin(), v.rend()
-#define FAST ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr)
-
-/*//! Arithmetic sequence law
-    sum = (n * (2*a + (n-1)*d))/2;
-    n -> number of terms
-    a -> first term
-    d -> common difference
-*/
-
+#define el '\n'
+#define all(n) n.begin(), n.end()
+#define int int64_t
 using namespace std;
-
-const int N = 2e5 + 5;
-const int mod = 32768;
-int dx[] = {1, -1, 0, 0};
-int dy[] = {0, 0, 1, -1};
-
+int check(int x, int y, int z) {
+    return (x + y > z && x + z > y && y + z > x);
+}
+int cnt;
 
 
-signed main()
+bool isPowerOfTwo(long long n) {
+    return (n > 0 && (n & (n - 1)) == 0);
+}
+
+
+bool ip(int n) {
+    return (n & (n - 1)) == 0;
+}
+
+bool isValidTriangle(int a, int b, int c) {
+    return (a + b > c) && (a + c > b) && (b + c > a);
+}
+
+
+
+int solve(int n)
 {
-    FAST;
+    
 
-    int t; cin >> t;
-    while(t--)
+    for (int i = 1; i < 10000; i++)
     {
-        int n; cin >> n;
-        deque <int> a(n);
-        for(int i = 0; i < n; i++) cin >> a[i];
-        sort(allr(a));
-        while(a.size() > 1)
-        {
-            int x = a[0] + a[1] - 1;
-            a.pop_front();
-            a.pop_front();
-            a.push_front(x);
+        if(i>=n) break;
+        int a = n;
+        int b = i;
+        int c = a ^ b;
+        if ((a+b>c) && (a+c > b) && (b + c > a) && b<a){
+            return b;
         }
-        cout << a[0] << endl;
     }
+    return -1;
+        
 
+
+
+
+
+
+
+
+
+
+}
+
+
+int bfsolve(int x) {
+    
+    if ((x & (x - 1)) == 0 || (x & (x + 1)) == 0) {
+        return -1;
+    }
+    
+    int a = std::__lg(x);
+    int b = __builtin_ctz(~x);
+    
+    int y = x ^ (1 << a) ^ (1 << b);
+    return y;
+}
+
+
+void upsolve()
+{
+    int mx = -1, mxnum;
+    for (int i = 2; i < int(1e9)+1; i++) {
+        int c = solve(i);
+        int b = bfsolve(i);
+        if (c == -1) {
+            if (b != -1) {
+                cout << "neg:  " << i << ' ' << c << ' ' << b << '\n';
+                exit(0);
+            }
+        }
+        else if (!check(i, c, i^c)) {
+            cout << i << ' ' << c << ' ' << (i^c) << '\n';
+            exit(0);
+        }
+        else {
+            if (mx < cnt) {
+                mx = cnt;
+                mxnum = i;
+            }
+        }
+    }
+    cout << "i:  " << mx << ' ' << mxnum;
+    // int t;
+    // cin >> t;
+    // while (t--)
+    // {
+    //     solve();
+    // }
+}
+void NEMO();
+int32_t main()
+{
+    NEMO();
+    // solve();
+    upsolve();
     return 0;
+}
+void NEMO()
+{
+    ios_base::sync_with_stdio(false), cout.tie(NULL), cin.tie(NULL);
+// #ifndef ONLINE_JUDGE
+//     freopen("input.txt", "r", stdin);
+//     freopen("output.txt", "w", stdout);
+// #endif
 }
