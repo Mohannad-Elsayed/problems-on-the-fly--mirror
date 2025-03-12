@@ -1,4 +1,4 @@
-#define ONLINE_JUDGE
+// #define ONLINE_JUDGE
 #include "bits/stdc++.h"
 using namespace std;
 #ifndef ONLINE_JUDGE

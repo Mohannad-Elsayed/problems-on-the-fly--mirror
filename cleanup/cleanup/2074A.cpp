@@ -1,4 +1,4 @@
-#define ONLINE_JUDGE
+// #define ONLINE_JUDGE
 #include "bits/stdc++.h"
 using namespace std;
 #ifndef ONLINE_JUDGE
@@ -25,24 +25,12 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-template<typename T>
-using mxpq =  priority_queue<T>;
-template<typename T>
-using mnpq =  priority_queue<T, vector<T>, greater<T>>;
+
 void solve() {
-    int n; cin >> n;
-    mnpq<int> mste;
-    for (int i = 0; i<n; i++){
+    set<int> ste;
+    for (int i = 0; i<4; i++){
         int t; cin >> t;
-        mste.push(t);
+        ste.insert(t);
     }
-    // print(mste);
-    while(mste.size() > 1) {
-        int a = mste.top();
-        mste.pop();
-        int b = mste.top();
-        mste.pop();
-        mste.push(a+b-1);
-    }
-    cout << mste.top();
+    cout << (ste.size() == 1 ? "YES" : "NO");
 }

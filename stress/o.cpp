@@ -1,46 +1,50 @@
-#define ONLINE_JUDGE
-#include "bits/stdc++.h"
-using namespace std;
-#ifndef ONLINE_JUDGE
-    #include "cleanup/debug.h"
-#else
-    #define print(...) 69
-    #define printarr(...) 69
-#endif
-using ll = long long;
-#define all(x) (x).begin(), (x).end()
-#define rall(x) (x).rbegin(), (x).rend()
-#define kill(x) return void(cout << (x));
-#define each(x, v) for (auto &(x) : (v))
-template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
-template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
-void solve();
-int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    cin.exceptions(cin.failbit);
-    int tt = 1;
-    cin >> tt;
-    while(tt--) {
-        solve();
-        if(tt) cout << '\n';
-    }return 0;
-}
+#include <bits/stdc++.h>
+#define int long long
+#define ll long long
+#define ld long double
+#define ull unsigned long long
+#define endl '\n'
+#define NF string::npos
+#define all(v) v.begin(), v.end()
+#define allr(v) v.rbegin(), v.rend()
+#define FAST ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr)
 
-void solve() {
-    string s; cin >> s;
-    reverse(all(s));
-    print(s);
-    int n = (int)s.size(), ans = 20;
-    for (int i = 0; i<n; i++) {
-        for (int j = i+1; j < n; j++){
-            string now;
-            now.push_back(s[j]);
-            now.push_back(s[i]);
-            if (stoi(now) % 25 == 0){
-                print(i, j, now);
-                kill(ans);
-                // chmin(ans, max(i, j - 1));
-            } // 54317 
+/*//! Arithmetic sequence law
+    sum = (n * (2*a + (n-1)*d))/2;
+    n -> number of terms
+    a -> first term
+    d -> common difference
+*/
+
+using namespace std;
+
+const int N = 2e5 + 5;
+const int mod = 32768;
+int dx[] = {1, -1, 0, 0};
+int dy[] = {0, 0, 1, -1};
+
+
+
+signed main()
+{
+    FAST;
+
+    int t; cin >> t;
+    while(t--)
+    {
+        int n; cin >> n;
+        deque <int> a(n);
+        for(int i = 0; i < n; i++) cin >> a[i];
+        sort(allr(a));
+        while(a.size() > 1)
+        {
+            int x = a[0] + a[1] - 1;
+            a.pop_front();
+            a.pop_front();
+            a.push_front(x);
         }
+        cout << a[0] << endl;
     }
+
+    return 0;
 }

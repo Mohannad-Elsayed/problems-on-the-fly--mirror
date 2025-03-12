@@ -25,22 +25,24 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-
+template<typename T>
+using mxpq =  priority_queue<T>;
+template<typename T>
+using mnpq =  priority_queue<T, vector<T>, greater<T>>;
 void solve() {
-    string s; cin >> s;
-    reverse(all(s));
-    print(s);
-    int n = (int)s.size(), ans = 20;
-    for (int i = 0; i<n; i++) {
-        for (int j = i+1; j < n; j++){
-            string now;
-            now.push_back(s[j]);
-            now.push_back(s[i]);
-            if (stoi(now) % 25 == 0){
-                print(i, j, now);
-                chmin(ans, max(i, j - 1));
-            } // 54317 
-        }
+    int n; cin >> n;
+    mnpq<int> mste;
+    for (int i = 0; i<n; i++){
+        int t; cin >> t;
+        mste.push(t);
     }
-    kill(ans);
+    // print(mste);
+    while(mste.size() > 1) {
+        int a = mste.top();
+        mste.pop();
+        int b = mste.top();
+        mste.pop();
+        mste.push(a+b-1);
+    }
+    cout << mste.top();
 }
