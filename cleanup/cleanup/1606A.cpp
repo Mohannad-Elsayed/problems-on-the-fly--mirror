@@ -28,5 +28,6 @@ int main() {
 }
 
 void solve() {
-    
+    string s; cin >> s;
+    cout << s.back() + s.substr(1);
 }

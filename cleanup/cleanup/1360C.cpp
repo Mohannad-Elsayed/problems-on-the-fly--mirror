@@ -28,5 +28,23 @@ int main() {
 }
 
 void solve() {
-    
+    int n; cin >> n;vector<int>v(n);getv(v);sort(all(v));
+    int o, e;
+    o = e = 0;
+    each(i, v) {
+        if (i == -1)
+            continue;
+        i&1 ? o++ : e++;
+    }
+
+    if(o%2 == 0 && e%2 == 0)
+        kill("YES");
+
+    for (int i = 0; i+1<n; i++) {
+        if (v[i] + 1 == v[i+1])
+            v[i] = v[i+1] = -1, o--, e--;
+        if(o%2 == 0 && e%2 == 0)
+            kill("YES");
+    }
+    kill(o%2 == 0 && e%2 == 0 ? "YES" : "NO");
 }

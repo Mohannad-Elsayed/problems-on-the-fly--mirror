@@ -1,63 +1,50 @@
-#include <bits/stdc++.h>
-using ll = long long;
+#include<bits/stdc++.h>
 using namespace std;
-
-namespace optimizedSolution {
-    int solve(int n)
-    {
-        int lg = __lg(n);
-        if ((1 << lg) == n || (1<<lg) - 1 == n || (1 << (lg+1)) - 1 == n)
-            return(-1);
-        return (1 << lg) -1;
-        
-    }
-}
-
-namespace bruteforceSolution {
-    int solve(int x) {
-        if ((x & (x - 1)) == 0 || (x & (x + 1)) == 0) {
-            return -1;
-        }
-        
-        int a = std::__lg(x);
-        int b = __builtin_ctz(~x);
-        
-        int y = x ^ (1 << a) ^ (1 << b);
-        return y;
-    }
-}
-
-
-void test()
+const int N = 1e8;
+bool comp[N];
+vector<int>primes;
+void oldsieve()
 {
-    int N = (int)1e9 + 1;
-
-    for (int i = 2; i < N; i++) {
-        int optimized = optimizedSolution::solve(i);
-        int correct = bruteforceSolution::solve(i);
-        if (correct == -1 && optimized == -1)
-            continue;
-        
-        if (correct == -1 && optimized != -1) {
-            cout << "At i = " << i << " optimized find an answer while correct didn't!";
-            return;
-        }
-        if (correct != -1 && optimized == -1) {
-            cout << "At i = " << i << " optimized didn't find an answer while there's one!";
-            return;
-        }
-
-        int a = optimized, b = i;
-        int c = a^b;
-        if (!(a+b > c && a+c > b && b+c > a)) {
-            cout << "At i = " << i << " optimized provided incorrect answer: " << optimized;
-            return;
-        }
-    }
+    memset(comp,0,sizeof comp);
+    primes.clear();
     
-    cout << "All Numbers Passed!";
+    bool done = false;
+    for(int i=2;i<N;i++)
+        if(!comp[i])
+        {
+            primes.push_back(i);
+            
+            if (i * i > N) {
+            	done = true;
+            }
+            
+            if (!done) for(int j=i*i;j<N;j+=i)
+                comp[j]=1;
+        }
 }
-int main() {
-    test();
-    return 0;
+void newsieve()
+{
+    memset(comp,0,sizeof comp);
+    primes.clear();
+    for(int i=2;i<N;i++)
+    {
+        if(!comp[i])
+            primes.push_back(i);
+            for(int j=0,si=primes.size();j<si&&i*primes[j]<N;j++)
+            {
+                comp[primes[j]*i]=1;
+                if(i%primes[j]==0)break;
+            }
+    }
+}
+int main()
+{
+	auto t0 = clock();
+    oldsieve();
+    //for(int i=0;i<20;i++)cout<<primes[i]<<' ';cout<<endl;
+    auto mid = clock();
+    cout << "diff is " << (1.0 * (mid - t0)) / CLOCKS_PER_SEC << endl;
+    newsieve();
+    //for(int i=0;i<20;i++)cout<<primes[i]<<' ';cout<<endl;
+    cout << "diff is " << (1.0 * (clock() - mid)) / CLOCKS_PER_SEC << endl;
 }

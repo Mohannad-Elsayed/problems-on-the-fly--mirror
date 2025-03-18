@@ -10,7 +10,7 @@ using namespace std;
 using ll = long long;
 #define all(x) (x).begin(), (x).end()
 #define rall(x) (x).rbegin(), (x).rend()
-#define kill(x) return void(cout << (x));
+#define kill(x) return void(cout << (x));   
 #define each(x, v) for (auto &(x) : (v))
 template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
 template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
@@ -28,5 +28,31 @@ int main() {
 }
 
 void solve() {
+    int n, m; cin >> n >> m;
+    vector<string> v(n);
+    each(i, v)
+        cin >> i;
     
+    string ans = v[0];
+    // print(ans);
+    for (int i = 0; i < m; i++) {
+        char save = ans[i];
+        for (char ch = 'a'; ch <= 'z'; ch++) {
+            ans[i] = ch;
+            int f = 1;
+            // count differences between ans and each string in v
+            each(str, v) {
+                int cnt = 0;
+                for (int c = 0; c<m; c++)
+                    cnt += ans[c] != str[c];
+                print(ans, str, cnt);
+                if (cnt > 1)
+                    f = 0;
+            }
+            if (f) 
+                kill(ans);
+        }
+        ans[i] = save;
+    }
+    cout << -1;
 }

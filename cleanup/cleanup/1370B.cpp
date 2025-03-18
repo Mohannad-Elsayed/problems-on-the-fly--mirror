@@ -28,5 +28,30 @@ int main() {
 }
 
 void solve() {
-    
+    int n; cin >> n;
+    n *= 2;
+    vector<pair<int, int>> odds, evens;
+    for (int i = 1; i<=n; i++) {
+        int t; cin >> t;
+        if (t&1)
+            odds.emplace_back(t, i);
+        else
+            evens.emplace_back(t, i);
+    }
+    print(odds);
+    print(evens);
+    int cnt = n/2-1;
+    while(cnt--) {
+        if (evens.size() > 2) {
+            cout << evens.back().second;
+            evens.pop_back();
+            cout << ' ' << evens.back().second << '\n';
+            evens.pop_back();
+            continue;
+        }
+        cout << odds.back().second;
+        odds.pop_back();
+        cout << ' ' << odds.back().second << '\n';
+        odds.pop_back();
+    }
 }

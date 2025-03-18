@@ -1,4 +1,4 @@
-#define ONLINE_JUDGE
+// #define ONLINE_JUDGE
 #include "bits/stdc++.h"
 using namespace std;
 #ifndef ONLINE_JUDGE
@@ -50,7 +50,7 @@ void solve() {
     auto sortedPairIndicies = sort_with_indices(v);
     auto sorted = sortedPairIndicies.first;
     vector<int> indicies = sortedPairIndicies.second;
-    if(sorted[n-1] == v[n-1] || sorted[n-1] == v[0]){
+    if(sorted[n-1] == v[n-1] || sorted[n-1] == v[0] || k > 1){
         cout << accumulate(sorted.end() - k - 1, sorted.end(), 0ll);
     }
     else{

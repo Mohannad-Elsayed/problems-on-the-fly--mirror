@@ -20,7 +20,7 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
@@ -28,5 +28,17 @@ int main() {
 }
 
 void solve() {
-    
+    int n; cin >> n;
+    vector<int> v(n), index(n+1), ans(3*n);
+    each(i, v)
+        cin >> i;
+    for (int i = 0; i<n; i++) {
+        int t; cin >> t;
+        index[t] = i;
+    }
+
+    for (int i = 0; i<n; i++) 
+        ans[(index[v[i]] - i + n) % n]++;
+
+    cout << *max_element(all(ans));
 }

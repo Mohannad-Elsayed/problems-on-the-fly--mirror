@@ -28,5 +28,9 @@ int main() {
 }
 
 void solve() {
-    
+    int a, b; cin >> a >> b;
+    if (a > b)
+        swap(a, b);
+    int c = max(2*a, b);
+    cout << c*c;
 }

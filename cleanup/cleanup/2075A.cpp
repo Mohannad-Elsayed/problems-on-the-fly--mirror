@@ -28,5 +28,19 @@ int main() {
 }
 
 void solve() {
+    int n, k; cin >> n >> k;
+    if (n <= k)
+        kill(1);
     
+    // odd - odd = even
+    // even - even = even
+    int cnt = 0;
+    if (n&1) {
+        n -= (k&1 ? k : k-1);   
+        cnt++;
+    }
+    if (k&1)
+        k--;
+    cnt +=  (n+k-1)/k;
+    cout << cnt;
 }

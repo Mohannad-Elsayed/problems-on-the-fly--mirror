@@ -28,5 +28,12 @@ int main() {
 }
 
 void solve() {
-    
+    int n; cin >> n;
+    vector<int> v(n);
+    getv(v);
+    sort(all(v));
+    int ans = 1e9;
+    for (int i = 1; i<n; i++)
+        chmin(ans, v[i]-v[i-1]);
+    kill(ans);
 }

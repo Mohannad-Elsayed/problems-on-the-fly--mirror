@@ -28,5 +28,14 @@ int main() {
 }
 
 void solve() {
-    
+    int n; cin >> n;
+    if (n > 45)
+        kill(-1);
+    string ans;
+    for (int i = 9; i > 0 && n; i--) {
+        int val = min(n, i);
+        n -= val;
+        ans = char(val+'0') + ans;
+    }
+    cout << ans;
 }

@@ -28,5 +28,26 @@ int main() {
 }
 
 void solve() {
-    
+    int n, m, t; cin >> n >> m;
+    set<int> ste;
+    vector<int> v(n), p(m);
+    getv(v);
+    getv(p);
+    each(i, p)
+        i--;
+    sort(all(p));
+    while(true) {
+        bool have = 0;
+        each(i, p) {
+            print(i, v[i], v[i+1]);
+            if (v[i] > v[i+1]) {
+                swap(v[i], v[i+1]);
+                have = 1;
+            }
+        }
+        if(!have)
+            break;
+    }
+    print(v);
+    kill(is_sorted(all(v)) ? "YES" : "NO");
 }

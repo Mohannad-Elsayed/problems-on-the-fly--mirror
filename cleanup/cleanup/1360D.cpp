@@ -26,7 +26,18 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-
+#define int ll
 void solve() {
-    
+    int n, k; cin >> n >> k;
+    if(n <= k)
+        kill(1);
+    int ans = n;
+    for (int i = 2; i*i <= n && i <= k; i++) {
+        if (n%i == 0) {
+            chmin(ans, n/i);
+            if (k >= n/i)
+                chmin(ans, i);
+        }
+    }
+    cout << ans;
 }

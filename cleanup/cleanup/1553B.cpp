@@ -28,5 +28,20 @@ int main() {
 }
 
 void solve() {
-    
+    string s, t; cin >> s >> t;
+    int n = (int)s.size(), m = (int)t.size();
+    for (int l = 0; l < n; l++) {
+        for (int r = l; r < n; r++) {
+            if (r-l+1 > m)
+                break;
+            string nt = s.substr(l, r-l+1);
+            int end = (r-1) - (m-(r-l+1));
+            for (int k = r-1; k > max(-1, end); k--)
+                nt.push_back(s[k]);
+            print(nt);
+            if (nt == t)
+                kill("YES");
+        }
+    }
+    kill("NO");
 }

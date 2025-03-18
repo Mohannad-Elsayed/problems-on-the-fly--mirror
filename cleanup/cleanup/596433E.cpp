@@ -20,7 +20,7 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
@@ -28,5 +28,22 @@ int main() {
 }
 
 void solve() {
+    int n, m; cin >> n >> m;
+    char a[n][m];
+    for (int i = 0; i<n; i++)
+        for (int j = 0; j<m; j++)
+            cin >> a[i][j];
     
+    for (int i = 0; i<m; i++) {
+        if(i&1) {
+            for (int j = 0; j<n; j++) 
+                cout << a[j][i];
+        }
+        else {
+            for (int j = n-1; ~j; j--) 
+                cout << a[j][i];
+
+        }
+    }
+
 }

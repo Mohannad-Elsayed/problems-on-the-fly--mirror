@@ -26,7 +26,26 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-
+void stress() {
+    int curr = 11;
+    for (int i = 0; i<10; i++) {
+        if (curr&1)
+            curr += i;
+        else    
+            curr -= i;
+        cout << i << ' ' << curr << '\n';
+    }
+}
+#define int ll
 void solve() {
-    
+    // stress();
+    int x, n; cin >> x >> n;
+    int arre[] = {0, -n, 1, n+1}, 
+        arro[] = {0, n, -1, -n-1};
+    int ans;
+    if (x&1) 
+        ans = x + arro[n%4];
+    else
+        ans = x + arre[n%4];
+    cout << ans;
 }

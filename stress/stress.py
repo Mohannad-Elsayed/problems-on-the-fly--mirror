@@ -1,13 +1,14 @@
 import subprocess
 import random
 import time
+import string
 
-def generate_test_case(n):
-    n = random.randint(1, 20)
-    a = [random.randint(-n, n) for _ in range(n)]
-    colors = ''.join(random.choice('BR') for _ in range(n))
-    return f"{n}\n{' '.join(map(str, a))}\n{colors}"
-
+def generate_test_case():
+    n, k = random.randint(2, 7), random.randint(1, 7)
+    while k >= n:
+        k = random.randint(1, n - 1)
+    arr = [random.randint(1, 10) for _ in range(n)]
+    return f"{n} {k}\n" + ' '.join(map(str, arr))
 def run_program(program, input_data):
     """Runs a compiled C++ program with input_data and returns output."""
     process = subprocess.run(
@@ -19,12 +20,12 @@ def run_program(program, input_data):
     return process.stdout.strip()
 
 def run_two_solutions():
-    test_count = 1000000
+    test_count = 100000
     all_testcases = []
     
     # Collect all test cases
     for i in range(test_count):
-        all_testcases.append(generate_test_case(i))
+        all_testcases.append(generate_test_case())
     
     # Build a single input string in "Codeforces style"
     input_data = f"{test_count}\n" + "\n".join(all_testcases)
@@ -76,14 +77,16 @@ def run_sol_checker():
     
     # Collect all test cases
     for i in range(test_count):
-        all_testcases.append(generate_test_case(i))
+        all_testcases.append(generate_test_case())
     
     # Build a single input string in "Codeforces style"
     input_data = f"{test_count}\n" + "\n".join(all_testcases)
     # print(input_data)
+    
+
     # Run the optimized program
     optimized_output = run_program("o.exe", input_data).splitlines()
-    
+
     
     # Check the outputs line by line
     for i in range(test_count):

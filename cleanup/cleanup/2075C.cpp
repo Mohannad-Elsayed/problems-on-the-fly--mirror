@@ -26,7 +26,35 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-
+struct hash_pair {
+    template <class T1, class T2>
+    size_t operator()(const pair<T1, T2>& p) const
+    {
+        // Hash the first element
+        size_t hash1 = hash<T1>{}(p.first);
+        // Hash the second element
+        size_t hash2 = hash<T2>{}(p.second);
+        // Combine the two hash values
+        return hash1
+               ^ (hash2 + 0x9e3779b9 + (hash1 << 6)
+                  + (hash1 >> 2));
+    }
+};
 void solve() {
-    
+    int n, m;
+    cin >> n >> m;
+    vector<int> v(m);
+    ll ans = 0;
+    getv(v);
+    for (int i = 0; i<m; i++) {
+        for (int j = i+1; j<m; j++) {
+            if (v[i]+v[j] >= n) {
+                int value = (min(v[i], v[j]) - (n-max(v[i], v[j])) + 1) * 2;
+                if(value > 0){
+                    ans += value;
+                }
+            }
+        }
+    }
+    cout << ans;
 }

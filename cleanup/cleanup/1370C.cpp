@@ -28,5 +28,24 @@ int main() {
 }
 
 void solve() {
+    string win = "Ashishgup", lose = "FastestFinger";
+    int n; cin >> n;
+    if (__builtin_popcount(n) == 1 && n != 2)
+        kill(lose);
+
+    int twos = 0;
+    while(n > 1 && n %2 == 0) 
+        n /= 2, twos++;
+
+    int odds = 0;
+    for (int i = 3; i*i <= n; i+=2)
+        while(n%i == 0)
+            n/=i, odds++;
+    if (n != 1)
+        odds++;
     
+    // print(odds, twos);
+    if (odds == 1 && twos == 1)
+        kill(lose);
+    kill(win);
 }

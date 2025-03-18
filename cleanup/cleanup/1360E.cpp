@@ -26,7 +26,29 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-
+void printm(auto& v) {
+    #ifndef ONLINE_JUDGE
+        each(i, v)
+            cout  << i << '\n';
+    #endif
+}
 void solve() {
-    
+    int n; cin >> n;
+    vector<string> mat(n);
+    each(i, mat)
+        cin >> i;
+    // printm(mat);
+    for (int row = 0; row+1 < n; row++) { // row 
+        for (int col = 0; col+1 < n; col++) { // col
+            if (mat[row][col] == '1') {
+                // there must be '1' to it's left or '1' under it
+                bool left = mat[row][col+1] == '1',
+                     under = mat[row+1][col] == '1';
+                if (left || under)
+                    continue;
+                kill("NO");
+            }
+        }
+    }
+    kill("YES");
 }
