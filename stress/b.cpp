@@ -1,39 +1,40 @@
-#ifdef NACHIA
-#define _GLIBCXX_DEBUG
-#else
-#define NDEBUG
-#endif
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
-using i64 = long long;
-using u64 = unsigned long long;
-#define rep(i,n) for(i64 i=0; i<i64(n); i++)
-const i64 INF = 1001001001001001001;
-template<typename A> void chmin(A& l, const A& r){ if(r < l) l = r; }
-template<typename A> void chmax(A& l, const A& r){ if(l < r) l = r; }
+#include<iostream>
+#include<algorithm>
 using namespace std;
 
-void testcase(){
-    i64 N, K; cin >> N >> K;
-    vector<i64> A(N); rep(i,N) cin >> A[i];
-    if(K >= 2){
-        sort(A.begin(), A.end());
-        i64 ans = 0;
-        rep(i,K+1){ ans += A.back(); A.pop_back(); }
-        cout << ans << "\n";
-    } else {
-        i64 ans = 0;
-        rep(i,N-1) chmax(ans, A[i] + A[N-1]);
-        rep(i,N-1) chmax(ans, A[1+i] + A[0]);
-        cout << ans << "\n";
+int makearray(int arr[] , int n){
+    for(int i=0;i<n;i++){
+        cin >> arr[i];
     }
+    sort(arr , arr + n);
+    int unique_end = unique(arr, arr + n) - arr;
+    return unique_end;
 }
 
-int main(){
-    ios::sync_with_stdio(false); cin.tie(nullptr);
-    i64 T; cin >> T; rep(t,T)
-    testcase();
+int count_unique(int a[] , int n , int b[] , int m){
+    int counter = 0;
+    for(int i=0;i<n;i++){
+        if(!binary_search(b , b + m , a[i])){
+            counter++;
+        }
+    }
+    return counter;
+}
+
+int solve(){
+    int n , m;
+    cin >> n >> m;
+    int a[n] , b[m];
+    int unique_a_size = makearray(a, n);
+    int unique_b_size = makearray(b, m);
+    int prob_a = count_unique(a, unique_a_size, b, unique_b_size);
+    int prob_b = count_unique(b, unique_b_size, a, unique_a_size);
+    cout << min(prob_a , prob_b) << '\n';
     return 0;
+}
+int main() {
+    int t; cin >> t;
+    while(t--) {
+        solve();
+    }
 }

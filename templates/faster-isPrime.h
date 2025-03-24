@@ -1,38 +1,22 @@
-bool isPrime(long long n) {
-  
+bool isPrime(int n) {
     if (n <= 1)
         return false;
-
-    if (n == 2  ||
-        n == 3  || 
-        n == 5  ||
-        n == 7  ||
-        n == 11 ||
-        n == 13 ||
-        n == 17 ||
-        n == 19 ||
-        n == 23 ||
-        n == 29
-    )
-        return true;
-        
-    if (n % 2  == 0  ||
-        n % 3  == 0  || 
-        n % 5  == 0  ||
-        n % 7  == 0  ||
-        n % 11 == 0  ||
-        n % 13 == 0  ||
-        n % 17 == 0  ||
-        n % 19 == 0  ||
-        n % 23 == 0  ||
-        n % 29 == 0
-    )
-        return false;
     
+    int primes[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+    int primesc = sizeof(primes) / sizeof(primes[0]);
+    for (int i = 0; i<primesc; i++) {
+        if (n == primes[i])
+            return true;
+        if (n % primes[i] == 0)
+            return false;
+    }
+    
+    int arr[] = {1, 7, 11, 13, 17, 19, 23, 29};
+    int arrc = sizeof(arr)/sizeof(arr[0]);
     // 30k + 1, 30k + 7
-    for (long long i = 30; i * i <= n; i += 30)
-        for (long long a : {1, 7, 11, 13, 17, 19, 23, 29})
-            if (n%(i+a) == 0)
+    for (int i = 30; i * i <= n; i += 30)
+        for (int j = 0; j < arrc; j++)
+            if (n % (i+arr[j]) == 0)
                 return false;
 
     return true;

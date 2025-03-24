@@ -4,11 +4,12 @@ import time
 import string
 
 def generate_test_case():
-    n, k = random.randint(2, 7), random.randint(1, 7)
-    while k >= n:
-        k = random.randint(1, n - 1)
-    arr = [random.randint(1, 10) for _ in range(n)]
-    return f"{n} {k}\n" + ' '.join(map(str, arr))
+    n = random.randint(1, 10)  # Adjusted to a smaller range for testing
+    m = random.randint(1, 10)  # Adjusted to a smaller range for testing
+    a = [random.randint(1, 100) for _ in range(n)]
+    b = [random.randint(1, 100) for _ in range(m)]
+    return f"{n} {m}\n" + ' '.join(map(str, a)) + "\n" + ' '.join(map(str, b))
+
 def run_program(program, input_data):
     """Runs a compiled C++ program with input_data and returns output."""
     process = subprocess.run(
@@ -78,16 +79,15 @@ def run_sol_checker():
     # Collect all test cases
     for i in range(test_count):
         all_testcases.append(generate_test_case())
-    
+
     # Build a single input string in "Codeforces style"
     input_data = f"{test_count}\n" + "\n".join(all_testcases)
     # print(input_data)
-    
 
     # Run the optimized program
     optimized_output = run_program("o.exe", input_data).splitlines()
 
-    
+
     # Check the outputs line by line
     for i in range(test_count):
         if i >= len(optimized_output):
