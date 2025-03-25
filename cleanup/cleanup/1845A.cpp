@@ -18,13 +18,6 @@ template<class T> void getv(T& v) {each(i, v)cin>>i;}
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 uniform_int_distribution<> uid(1, 1ll<<31);
 void solve();
-ll get_first_k_rev(ll k, ll n) {
-    // 1 2 3 4 5 6 {7 8 9} // ?k = 3 
-    // [1 2 3 4 5 6] {7 8 9} // ?k = 3 
-    // same as sum_1_n - sum_1_n-k
-    ll v = n-k;
-    return n*(n+1)/2 -  v*(v+1)/2;
-}
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
@@ -37,28 +30,21 @@ int main() {
 }
 
 void solve() {
-    ll k, x; cin >> k >> x;
-    if (x > (k*(k-1)/2)) {
-        x -= (k*(k-1)/2);
-        ll l = 1, r = k, m, res;
-        res = r;
-        while(l<=r){
-            m = (l+r)/2;
-            if (get_first_k_rev(m, k) >= x) {
-                res = m;
-                r = m-1;
-            } else l = m+1;
-        }
-        kill(k+res-1);
-    } else {
-        ll l = 1, r = k-1, m, res = k-1;
-        while(l<=r) {
-            m = (l+r)>>1;
-            if (m*(m+1)/2 >= x) {
-                res = m;
-                r = m-1;
-            } else l = m+1;
-        }
-        kill(res);
+    int n, k, x; cin >> n >> k >> x;
+    if (x != 1){
+        cout << "YES\n" << n  << '\n';
+        for (int i = 0; i<n; i++)
+            cout << 1 << ' ';
+        return;
     }
+    if (k == 1 || (k == 2 && n%2))
+        kill("NO");
+    vector<int> ans;
+    if (n % 2 == 0)
+        ans = vector<int>(n/2, 2);
+    else 
+        ans = vector<int>(n/2-1, 2), ans.push_back(3);
+    cout << "YES\n" << ans.size() << '\n';
+    each(i, ans)
+        cout << i << ' ';
 }
