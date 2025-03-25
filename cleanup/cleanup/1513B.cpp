@@ -18,13 +18,6 @@ template<class T> void getv(T& v) {each(i, v)cin>>i;}
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 uniform_int_distribution<> uid(1, 1ll<<31);
 void solve();
-ll get_first_k_rev(ll k, ll n) {
-    // 1 2 3 4 5 6 {7 8 9} // ?k = 3 
-    // [1 2 3 4 5 6] {7 8 9} // ?k = 3 
-    // same as sum_1_n - sum_1_n-k
-    ll v = n-k;
-    return n*(n+1)/2 -  v*(v+1)/2;
-}
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
@@ -35,30 +28,38 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-
+void stress() {
+    int n; cin >> n;
+    vector<int> v(n);
+    getv(v);
+    auto isvalid = [&]() -> bool {
+        for (int i = 0; i+1<n; i++) {
+            int a1 = v[0], a2 = v.back();
+            for (int j = 0; j<=i; j++)
+                a1 &= v[j];
+            for (int j = i+1; j<n; j++)
+                a2 &= v[j];
+            if (a1 != a2)
+                return false;
+        }
+        return true;
+    };
+    auto printb = [&](int a) {
+        do {
+            cout << (a&1);
+            a /= 2;
+        } while(a);
+        cout << ' ';
+    };
+    sort(all(v));
+    do {
+        if (isvalid()) {
+            each(i, v) 
+                printb(i);
+            cout << "\n\n";
+        }
+    } while(next_permutation(all(v)));
+}
 void solve() {
-    ll k, x; cin >> k >> x;
-    if (x > (k*(k-1)/2)) {
-        x -= (k*(k-1)/2);
-        ll l = 1, r = k, m, res;
-        res = r;
-        while(l<=r){
-            m = (l+r)/2;
-            if (get_first_k_rev(m, k) >= x) {
-                res = m;
-                r = m-1;
-            } else l = m+1;
-        }
-        kill(k+res-1);
-    } else {
-        ll l = 1, r = k-1, m, res = k-1;
-        while(l<=r) {
-            m = (l+r)>>1;
-            if (m*(m+1)/2 >= x) {
-                res = m;
-                r = m-1;
-            } else l = m+1;
-        }
-        kill(res);
-    }
+    stress();
 }

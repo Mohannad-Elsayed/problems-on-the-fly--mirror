@@ -11,7 +11,9 @@ using ll = long long;
 #define all(x) (x).begin(), (x).end()
 #define rall(x) (x).rbegin(), (x).rend()
 #define kill(x) return void(cout << (x));
-#define each(x, v) for (auto &(x) : (v))
+#define each(x, v) for (auto &x : (v))
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+uniform_int_distribution<> uid(1, 1ll<<31);
 template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
 template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
 template<class T> void getv(T& v) {each(i, v)cin>>i;}
@@ -29,10 +31,15 @@ int main() {
 
 void solve() {
     int n; cin >> n;
-    if(n==1)
-        kill(1);
-    if(n==2)
+    if (n == 2)
         kill(-1);
-    
-    
+    int c = 1;
+    for (int i = 0; i<n; i++) {
+        for (int j = 0; j <n; j++) {
+            cout << c << (j != n-1 ? " " : "\n");
+            c += 2;
+            if (c > n*n)
+                c = 2;
+        }
+    }
 }

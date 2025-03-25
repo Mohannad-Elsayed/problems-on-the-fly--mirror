@@ -95,7 +95,8 @@
         "variant": "cpp",
         "generator": "cpp",
         "print": "cpp",
-        "text_encoding": "cpp"
+        "text_encoding": "cpp",
+        "xiosbase": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled",
     "C_Cpp.default.compilerPath": "C:/msys64/ucrt64/bin/g++.exe"
