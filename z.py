@@ -1,8 +1,8 @@
 import sys
-sys.stdout = open("6", 'wt')
+sys.stdout = open("h1", 'wt')
 
-t = 1
+t = 1000
 print(t)
-n = int(1)
+n = int(1e4)
 for _ in range(t):
     print(n)
