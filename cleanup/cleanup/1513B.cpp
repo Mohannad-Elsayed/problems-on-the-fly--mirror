@@ -28,38 +28,82 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-void stress() {
-    int n; cin >> n;
-    vector<int> v(n);
-    getv(v);
-    auto isvalid = [&]() -> bool {
-        for (int i = 0; i+1<n; i++) {
-            int a1 = v[0], a2 = v.back();
-            for (int j = 0; j<=i; j++)
-                a1 &= v[j];
-            for (int j = i+1; j<n; j++)
-                a2 &= v[j];
-            if (a1 != a2)
-                return false;
+
+class DSU {
+    private:
+    int N = 0, numSets;
+    vector<int> root;
+    vector<int> sze;
+    bool is_initialized(){
+        return N;
+    }
+    void make_set(int u){
+        assert(is_initialized());
+        root[u] = u;
+        sze[u] = 1;
+    }
+    public:
+    DSU() {}
+    DSU(int n) {
+        init(n);
+    }
+    void init(int _n){
+        N = _n + 100;
+        root.resize(N);
+        sze.resize(N);
+        numSets = _n;
+        for (int i = 0; i<N; i++)
+            make_set(i);
+    }
+    int find_set(int u){
+        assert(is_initialized());
+        while (u != root[u]) 
+            u = root[u] = root[root[u]];
+        return u;
+    }
+    bool union_set(int u, int v){
+        assert(is_initialized());
+        u = find_set(u), 
+        v = find_set(v);
+        if (u != v){
+            if (sze[u] > sze[v])
+                swap(u, v); // u is smaller, then root[u] = v
+            root[u] = v; // rep of the smaller is the bigger representative 
+            sze[v] += sze[u]; // size of the bigger is increased
+            return --numSets;
         }
-        return true;
-    };
-    auto printb = [&](int a) {
-        do {
-            cout << (a&1);
-            a /= 2;
-        } while(a);
-        cout << ' ';
-    };
-    sort(all(v));
-    do {
-        if (isvalid()) {
-            each(i, v) 
-                printb(i);
-            cout << "\n\n";
-        }
-    } while(next_permutation(all(v)));
-}
+        return false;
+    }
+    bool same_set(int u, int v){
+        assert(is_initialized());
+        return find_set(u) == find_set(v);
+    }
+    int size_set(int u){
+        return sze[find_set(u)];
+    }
+    int size(){
+        return numSets;
+    }
+};
+
+class edge {
+    public:
+    int f, t, w;
+    edge() {}
+    edge(int _f, int _t) : f(_f), t(_t), w(0) {}
+    bool operator < (const edge &e) const {
+        return w > e.w;
+    }
+    friend string to_string(const edge e) {
+        cout << "from: " << e.f << " to: " << e.t << " w: " << e.w << '\n';
+    }
+};
 void solve() {
-    stress();
+    int n, m; 
+    cin >> n >> m;
+    DSU d;
+    vector<edge> g(m);
+    each(i, g) {
+        cin >> i.f >> i.t >> i.w;
+    }
 }

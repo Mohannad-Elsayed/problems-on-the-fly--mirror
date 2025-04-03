@@ -43,6 +43,17 @@ string to_string(vector<bool> v) {
     return res;
 }
 
+string to_string(__int128_t &v) {
+    if(v==0) return "0";
+    __int128_t num=v;
+    string s;
+    if(v<0)num=-num;
+    for(;num>0;num/=10) s.push_back((char)(num%10)+'0');
+    if (v<0)s.push_back('-');
+    reverse(s.begin(), s.end());
+    return s;
+}
+
 template <size_t N>
 string to_string(bitset<N> v) {
     string res = "";

@@ -18,7 +18,6 @@ template<class T> void getv(T& v) {each(i, v)cin>>i;}
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 uniform_int_distribution<> uid(1, 1ll<<31);
 void solve();
-
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
@@ -29,38 +28,31 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-const int MOD = 1e9 + 7; // Example prime modulus
-
-// Function to compute maximum subarray product mod M
-ll maxSubarrayProduct(vector<ll>& nums) {
-    int n = nums.size();
-    if (n == 0) return 0;
-    
-    ll maxProd = nums[0], minProd = nums[0], result = nums[0];
-    
-    for (int i = 1; i < n; i++) {
-        if (nums[i] < 0) swap(maxProd, minProd);
-        
-        maxProd = (nums[i] * maxProd) % MOD;
-        minProd = (nums[i] * minProd) % MOD;
-        
-        maxProd = max((ll)nums[i], maxProd);
-        minProd = min((ll)nums[i], minProd);
-        
-        result = max(result, maxProd);
-        
-        // Handling negative values properly to avoid negative mod results
-        if (maxProd < 0) maxProd += MOD;
-        if (minProd < 0) minProd += MOD;
-    }
-    
-    return result;
-}
 
 void solve() {
-    ll n; cin >> n;
-    vector<ll> v(n);
-    each(i, v)
-        cin >> i;
-    cout << max(1ll, maxSubarrayProduct(v));
+    int n, m; cin >> n >> m;
+    while(n) {
+        vector<vector<int>> g(n+1);
+        vector<int> ans, vis(n+1);
+        function<void(int)> dfs = [&](int u) {
+            vis[u] = 1;
+            each(ver, g[u])
+                if (!vis[ver])
+                    dfs(ver);
+            ans.push_back(u);
+        };
+        while(m--) {
+            int u, v; cin >> u >> v;
+            g[u].push_back(v);
+        }
+        print(g);
+        for (int i = 1; i<=n; i++)
+            if (!vis[i])
+                dfs(i);
+        reverse(all(ans));
+        print(ans);
+        each(i, ans)
+            cout << i << " \n"[i == ans.back()];
+        cin >> n >> m;
+    }
 }
