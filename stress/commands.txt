@@ -1,1 +1,2 @@
-cd "C:\Users\moha\Documents\problems-on-the-fly--mirror\stress"; g++ b.cpp -o b; g++ o.cpp -o o
+cd "C:\Users\moha\Documents\problems-on-the-fly--mirror\stress"; 
+g++ b.cpp -o b; g++ o.cpp -o o

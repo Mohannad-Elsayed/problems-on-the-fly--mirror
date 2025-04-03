@@ -22,7 +22,7 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
@@ -86,24 +86,28 @@ class DSU {
     }
 };
 
-class edge {
-    public:
-    int f, t, w;
-    edge() {}
-    edge(int _f, int _t) : f(_f), t(_t), w(0) {}
-    bool operator < (const edge &e) const {
-        return w > e.w;
-    }
-    friend string to_string(const edge e) {
-        cout << "from: " << e.f << " to: " << e.t << " w: " << e.w << '\n';
-    }
-};
+
 void solve() {
-    int n, m; 
-    cin >> n >> m;
-    DSU d;
-    vector<edge> g(m);
-    each(i, g) {
-        cin >> i.f >> i.t >> i.w;
+    int n; cin >> n;
+    DSU d(n);
+    vector<int> v(n+1);
+    for (int i = 1; i <= n; i++)
+        cin >> v[i];
+
+    for (int i = 1; i <= n; i++) {
+        if (v[i]) {
+            d.union_set(v[i], i);
+        }
     }
+    print(d.size());
+    int mx = -1, indans;
+    for (int i = 1; i <= n; i++) {
+        print(i, d.size_set(i));
+        if (!v[i] && d.size_set(i) > mx) {
+            mx = d.size_set(i);
+            indans = i;
+        }
+    }
+    cout << indans << ' ' << mx;
+
 }

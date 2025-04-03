@@ -1,7 +1,7 @@
 class edge {
     public:
     int f, t;
-    double w;
+    int w;
     edge() {}
     edge(int _f, int _t) : f(_f), t(_t), w(0) {}
     edge(int _f, int _t, int _w) : f(_f), t(_t), w(_w) {}

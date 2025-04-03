@@ -43,58 +43,53 @@ void sieve(int maximum) {
         }
 }
 
+vector<int> factorlg(int _n){
+    vector<int> spf;
+    while(smallest_factor[_n]){
+        spf.push_back(smallest_factor[_n]);
+        _n /= smallest_factor[_n];
+    }
+    sort(all(spf));
+    return spf;
+}
+
+vector<int> factor(ll _n){
+    vector<int> spf;
+    for (int i = 2; 1LL * i * i <= _n; i++)
+        while(_n % i == 0)
+            spf.push_back(i), _n /= i;
+    if (_n != 1)
+        spf.push_back(_n);
+    sort(all(spf));
+    return spf;
+}
+
 
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
     int tt = 1;
-    // freopen("35", "rt", stdin);
-    sieve((int)1e5);
-    // cin >> tt;
+    int N = 1e7+100;
+    sieve(N);
+    cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
     }return 0;
 }
-int MOD = (int) 1e13 + 7;
-ll fp(ll b, ll n) {
-    b %= MOD;
-    ll s = 1;
-    while (n) {
-        if (n & 1) s = s * b % MOD;
-        b = b * b % MOD;
-        n /= 2;
-    }
-    return s;
-}
-ll mul(ll a, ll b) { return ((a % MOD) * (b % MOD)) % MOD; }
-ll divide(ll a, ll b) { return mul(a, fp(b, MOD - 2)); }
 
 void solve() {
-    int n, k, cnt; cin >> n >> k;
-    map<int, vector<int>> ps; // unique primes in all numbers & their frequency
-    while(n--) {
-        int k; 
-        cin >> k;
-        each(p, primes) {
-            cnt = 0;
-            if (1ll * p * p > k)
-                break;
-            while(k % p == 0)
-                k /= p, cnt++;
-            ps[p].push_back(cnt);
-        }
-        if (k != 1)
-            ps[k].push_back(1);
+    int n; cin >> n;
+    vector<int> a(n), b(n), pa, pb;
+    getv(a);
+    getv(b);
+    int ans = 0;
+    for (int i = 0; i<n; i++) {
+        pa = factor(a[i]);
+        pb = factor(b[i]);
+        while(pa.size() && pb.size() && pa.back() == pb.back())
+            pa.pop_back(), pb.pop_back();
+        ans += pa.size() + pb.size();
     }
-    // print(ps);
-    ll lccm = 1;
-    each(p, ps) {
-        print(p.second.size(), k);
-        if (p.second.size() < k)
-            continue;
-        sort(rall(p.second));
-        lccm = mul(lccm, fp(p.first, p.second[k-1]));
-    }
-    cout << lccm;
+    cout << ans;
 }
