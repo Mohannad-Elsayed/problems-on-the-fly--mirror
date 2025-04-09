@@ -1,4 +1,4 @@
-#define ONLINE_JUDGE
+// #define ONLINE_JUDGE
 #include "bits/stdc++.h"
 using namespace std;
 #ifndef ONLINE_JUDGE
@@ -19,7 +19,7 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 uniform_int_distribution<> uid(1, 1ll<<30);
 void solve();
 int main() {
-    // cin.tie(0)->sync_with_stdio(0);
+    cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
     int tt = 1;
     // cin >> tt;
@@ -30,40 +30,26 @@ int main() {
 }
 const int OO = 1e9;
 void solve() {
-    int n, m, s, d, t; cin >> n >> m;
-    int c = 1;
-    while(n) {
-        vector<vector<int>> g(n, vector<int>(n, 0));
-        for (int i = 0; i<n; i++)
-            g[i][i] = 0;
-        for (int i = 0; i<m; i++) {
-            int c1, c2, p;
-            cin >> c1 >> c2 >> p;
-            c1--, c2--;
-            g[c1][c2] = p;
-            g[c2][c1] = p;
+    int n, m, u, v, w, c = 1, s, d, t, ans;
+    cin >> n >> m;
+    while (n) {
+        vector<vector<int>> g(n, vector<int>(n));
+        while(m--) {
+            cin >> u >> v >> w;
+            u--, v--;
+            g[u][v] = w;
+            g[v][u] = w;
         }
-        for (int k = 0; k<n; k++) {
-            for (int i = 0; i<n; i++) {
-                for (int j = 0; j<n; j++) {
+        for (int k = 0; k<n; k++)
+            for (int i = 0; i<n; i++) 
+                for (int j = 0; j<n; j++)
                     g[i][j] = max(g[i][j], min(g[i][k], g[k][j]));
-                }
-            }
-        }
-        print(g);
+        // print(g);
+        int mn = OO;
         cin >> s >> d >> t;
-        s--, d--;
-        print(g[s][d]);
-        print(g[d][s]);
-        int ans = (90+g[s][d]-1)/g[s][d];
-        printf("Scenario #%d\nMinimum Number of Trips = %d", c, ans);
-        
-        
-        
-        //!_______________________
-        c++;
+        ans = (t+g[s-1][d-1]-2)/(g[s-1][d-1]-1);
+        cout << "Scenario #" << c++ << "\nMinimum Number of Trips = " << ans << "\n\n";
         cin >> n >> m;
-        if (n)
-            cout << "\n\n";
     }
+    
 }

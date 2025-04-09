@@ -228,7 +228,7 @@ void minimax()
 	// find path such that max value on road is minimum
 
 	lp(k, n) lp(i, n) lp(j, n)
-		adj[i][j] = min(adj[i][j], max(adj[i][k], adj[k][j]) );
+		adj[i][j] = min(adj[i][j], max(adj[i][k], adj[k][j]));
 }
 
 void maximin()

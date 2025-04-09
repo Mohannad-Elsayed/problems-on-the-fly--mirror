@@ -14,12 +14,6 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def generate_test_case():
-    n, k = random.randint(1, 10), random.randint(1, 10)
-    strings = [''.join(random.choices(string.ascii_lowercase, k=random.randint(1, 9))) for _ in range(n)]
-    numbers = [str(random.randint(-20, 20)) for _ in range(n)]
-    return str(n) + ' ' + str(k) +'\n'+"\n".join(strings)+'\n'+" ".join(numbers)
-
 def run_program(program, input_data):
     """Runs a compiled C++ program with input_data and returns output if successful, else returns stderr."""
     process = subprocess.run(
@@ -33,9 +27,28 @@ def run_program(program, input_data):
     else:
         return f"Error: {process.stderr.strip()}"
 
+def generate_test_case():
+    n = random.randint(2, 100)  # adjust for demo
+    m = random.randint(1, min(n * (n - 1) // 2, n//2))  # limit edges to avoid excessive density
+    edges = set()
+    nodes = list(range(1, n + 1))
+    random.shuffle(nodes)  # Randomize node order to ensure acyclic graph generation
+
+    for i in range(len(nodes)):
+        for j in range(i + 1, len(nodes)):
+            if len(edges) >= m:
+                break
+            edges.add((nodes[i], nodes[j]))  # Ensure directed edge from lower to higher index
+
+    lines = [f"{n} {len(edges)}"]
+    for (v, u) in edges:
+        lines.append(f"{v} {u}")
+    # print("\n".join(lines))
+    return "\n".join(lines)
+
 #! run two solutions
 def run_two_solutions():
-    test_count = 100000
+    test_count = 1
     all_testcases = []
     
     # Collect all test cases
@@ -43,9 +56,9 @@ def run_two_solutions():
         all_testcases.append(generate_test_case())
     
     # Build a single input string in "Codeforces style"
-    input_data = f"{test_count}\n" + "\n".join(all_testcases)
-    # input_data = "\n".join(all_testcases)
-    # print(input_data)
+    # input_data = f"{test_count}\n" + "\n".join(all_testcases)
+    input_data = "\n".join(all_testcases)
+    print(input_data)
     
     # Run each program once
     brute_output = run_program("b.exe", input_data).splitlines()
@@ -59,11 +72,11 @@ def run_two_solutions():
         if i >= len(brute_output) or i >= len(optimized_output):
             print(f"{bcolors.WARNING}Output mismatch in length at test #{i+1}{bcolors.ENDC}")
             break
-        if brute_output[i] != optimized_output[i]:
+        if brute_output[i].strip() != optimized_output[i].strip():
             print(f"{bcolors.FAIL}Test #{i+1} Failed!")
             print(f"Input:\n{all_testcases[i].strip()}")
             print(f"Brute-force: {brute_output[i]}")
-            print(f"Optimized: {optimized_output[i]}{bcolors.ENDC}")
+            print(f"Optimized:   {optimized_output[i]}{bcolors.ENDC}")
             break
     else:
         print(f"{bcolors.OKGREEN}All test cases passed!{bcolors.ENDC}")

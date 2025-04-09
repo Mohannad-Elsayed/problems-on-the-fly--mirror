@@ -16,19 +16,44 @@ template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 
 template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
 template<class T> void getv(T& v) {each(i, v)cin>>i;}
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<> uid(1, 1ll<<31);
+uniform_int_distribution<> uid(1, 1ll<<30);
 void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
     }return 0;
 }
-
 void solve() {
-    
+    int n; cin >> n;
+    vector v = vector(n, vector<int>(n));
+    each(vv, v)
+        each(i, vv)
+            cin >> i;
+
+    vector<ll> ed(n), ans(n), taken(n);
+    getv(ed);
+    each(i, ed)
+        i--;
+
+    for (int k = n-1; ~k; k--) {
+        ll &sum = ans[k];
+        taken[ed[k]] = 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                chmin(v[i][j], v[i][ed[k]]+v[ed[k]][j]);
+                if (taken[i] && taken[j]) {
+                    print(i, j, k, sum);
+                    sum += v[i][j];
+                }
+            }
+        }
+    }
+
+    each(i, ans)
+        cout << i << ' ';
 }
