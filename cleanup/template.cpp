@@ -1,9 +1,10 @@
 // #define ONLINE_JUDGE
 #include "bits/stdc++.h"
 using namespace std;
-#ifndef ONLINE_JUDGE
+#if __has_include("cleanup/debug.h") && (!defined(ONLINE_JUDGE))
     #include "cleanup/debug.h"
 #else
+    #pragma message("cleanup/debug.h not found, or ONLINE_JUDGE defined.")
     #define print(...) 69
     #define printarr(...) 69
 #endif

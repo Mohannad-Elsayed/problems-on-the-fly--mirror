@@ -2,7 +2,7 @@
 #include "bits/stdc++.h"
 using namespace std;
 #ifndef ONLINE_JUDGE
-    #include "cleanup/debug.h"
+    // #include "cleanup/debug.h"
 #else
     #define print(...) 69
     #define printarr(...) 69
@@ -22,52 +22,33 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
     }return 0;
 }
-#define int ll
+
 void solve() {
-    int n, k, ans = 0; cin >> n >> k;
-
-    string s;
-    vector<int> scores(n), mnpal(n);
-    vector<string> vs(n);
-
-    getv(vs);
-
-    for (int i = 0; i<n; i++) {
-        int sz = vs[i].size(); // 2
-        for (int pal = 0; pal < sz/2; pal++) { // 0 -> 1
-            mnpal[i] += (vs[i][pal] != vs[i][sz-pal-1]); // 2-0-1 = 1
-        }
+    int n, m, u, v; cin >> n >> m;
+    vector<vector<int>> g(n+1);
+    vector<int> vis(n+1), ans(n+1);
+    while(m--) {
+        cin >> u >> v;
+        g[v].push_back(u);
     }
-    getv(scores);
-
-    print(mnpal);
-    print(scores);
-
-    vector<bool> taken(n);
-    int currsumk = 0, currsumsc = 0;
-    for (int l = 0, r = 0; l < n && r < n; l++) {
-        while(r < n && currsumk + mnpal[r] <= k) {
-            currsumsc += scores[r];
-            currsumk += mnpal[r];
-            taken[r] = 1;
-            chmax(ans, currsumsc);
-            r++;
-        }
-        if (taken[l]) {
-            currsumk -= mnpal[l];
-            currsumsc -= scores[l];
-        }
-        if (l > r)
-            r = l;
-        print(l, r, ans);
-        chmax(ans, currsumsc);
-        print(l, r, ans);
+    int c = 1;
+    function<void(int)> dfs = [&](int u) {
+        vis[u] = 1;
+        each(v, g[u]) 
+            if (!vis[v])
+                dfs(v);
+        ans[u] = c++;
+    };
+    for (int i = 1; i <= n; i++)
+        if (!vis[i])
+            dfs(i);
+    for (int i = 1; i <= n; i++) {
+        cout << ans[i] << ' ';
     }
-    cout << ans;
 }
