@@ -240,7 +240,6 @@ template<std::ranges::range T> constexpr auto unique_element(const T& x) {
 template<class T> constexpr bool inr(const T& l, const T& x, const T& r) {
     return l <= x && x < r;
 }
-
 #if __GNUC__ >= 12
 template<size_t N> struct ParseInput {
     constexpr ParseInput(const char (&s)[N]) {

@@ -5,14 +5,13 @@ private:
     //! change skip value
     T skip = -1; 
     vector<vector<T>> table;
-    function<T(T, T)> merge = [&](T a, T b) {
-        return a&b;
-    };
-    bool is_overlap;
+    function<T(T, T)> merge;
+    int is_overlap;
 
 public:
+    template<typename U>
     explicit sparse(vector<T> arr, int is_overlap = 0) 
-        :is_overlap(is_overlap), n((int)arr.size()), Log(__lg(arr.size()) + 1), table(Log, vector<T>(n)) {
+        :is_overlap(is_overlap, U& f), n((int)arr.size()), merge(f), Log(__lg(arr.size()) + 1), table(Log, vector<T>(n)) {
         table[0] = arr;
         for (int l = 1; l < Log; l++) {
             for (int i = 0; i + (1 << (l - 1)) < n; i++) {
