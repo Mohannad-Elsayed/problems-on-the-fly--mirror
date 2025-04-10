@@ -1,9 +1,10 @@
 // #define ONLINE_JUDGE
 #include "bits/stdc++.h"
 using namespace std;
-#ifndef ONLINE_JUDGE
+#if __has_include("cleanup/debug.h") && (!defined(ONLINE_JUDGE))
     #include "cleanup/debug.h"
 #else
+    #pragma message("cleanup/debug.h not found, or ONLINE_JUDGE defined.")
     #define print(...) 69
     #define printarr(...) 69
 #endif
@@ -30,33 +31,103 @@ int main() {
 }
 #define int ll
 
+class edge {
+    public:
+    int f, t;
+    int w;
+    edge() {}
+    edge(int _f, int _t) : f(_f), t(_t), w(0) {}
+    edge(int _f, int _t, int _w) : f(_f), t(_t), w(_w) {}
+    edge(int _t) : f(-1), t(_t), w(0) {}
+    bool operator < (const edge &e) const {
+        return w < e.w;
+    }
+    bool operator > (const edge &e) const {
+        return w > e.w;
+    }
+    friend string to_string(const edge e) {
+        return "from: " + to_string(e.f) + " to: " + 
+                to_string(e.t) + " w: " + to_string(e.w) + '\n';
+    }
+};
+
+class DSU {
+    private:
+    int N = 0, numSets;
+    vector<int> root;
+    vector<int> sze;
+    bool is_initialized(){
+        return N;
+    }
+    void make_set(int u){
+        assert(is_initialized());
+        root[u] = u;
+        sze[u] = 1;
+    }
+    public:
+    DSU() {}
+    DSU(int n) {
+        init(n);
+    }
+    void init(int _n){
+        N = _n + 100;
+        root.resize(N);
+        sze.resize(N);
+        numSets = _n;
+        for (int i = 0; i<N; i++)
+            make_set(i);
+    }
+    int find_set(int u){
+        assert(is_initialized());
+        while (u != root[u]) 
+            u = root[u] = root[root[u]];
+        return u;
+    }
+    bool union_set(int u, int v){
+        assert(is_initialized());
+        u = find_set(u), 
+        v = find_set(v);
+        if (u != v){
+            if (sze[u] > sze[v])
+                swap(u, v); // u is smaller, then root[u] = v
+            root[u] = v; // rep of the smaller is the bigger representative 
+            sze[v] += sze[u]; // size of the bigger is increased
+            return --numSets;
+        }
+        return false;
+    }
+    bool same_set(int u, int v){
+        assert(is_initialized());
+        return find_set(u) == find_set(v);
+    }
+    int size_set(int u){
+        return sze[find_set(u)];
+    }
+    int size(){
+        return numSets;
+    }
+};
+
 void solve() {
     int n, m; cin >> n >> m;
-    map<pair<int, int>, int> special;
-    vector<int> vals(n+1);
-    int mnidx, mnval = 1e16;
-    for (int i = 1; i<=n; i++) {
-        cin >> vals[i];
-        if (chmin(mnval, vals[i]))
-            mnidx = i;
-    }
-    print(mnval, mnidx);
-    for (int i = 0; i<m; i++) {
-        int a, b, w; 
-        cin >> a >> b >> w;
-        if (special.count({a, b}))
-            chmin(w, special[{a, b}]);
-        special[make_pair(a, b)] = w;
-        special[make_pair(b, a)] = w;
-    }
-    int ans = 0;
-    for (int i = 1; i<=n; i++) {
-        if (i == mnidx)
-            continue;
-        if (special.count({mnidx, i}) && special[{mnidx, i}] < mnval+vals[i])
-            ans += special[{mnidx, i}];
-        else ans += vals[i]+mnval;
-    }
-    cout << ans;
+    vector<int> v(n);
+    vector<edge> edges(m);
+    getv(v);
+    each(e, edges)
+        cin >> e.f >> e.t >> e.w, e.f--, e.t--;
+    int mnnode = -1, mnval = 1e15;
+    for (int i = 0; i<n; i++)
+        if (chmin(mnval, v[i]))
+            mnnode = i;
+    for (int i = 0; i<n; i++) 
+        edges.emplace_back(mnnode, i, v[mnnode]+v[i]);
     
+    DSU d(n);
+    sort(all(edges));
+    // print(edges);
+    int ans = 0;
+    each(e, edges)
+        if (d.union_set(e.f, e.t))
+            ans += e.w;
+    cout << ans;
 }
