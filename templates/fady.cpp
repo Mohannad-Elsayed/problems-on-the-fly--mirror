@@ -1958,7 +1958,7 @@ namespace combinatorics {
         return int(x * 1LL * y % mod);
     }
 }
-//using namespace combinatorics;
+// using namespace combinatorics;
 
 namespace FFT {
     const int mod = 998244353;
