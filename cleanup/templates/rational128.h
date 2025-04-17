@@ -173,4 +173,7 @@ public:
         r.reduce();
         return is;
     }
+    friend string to_string(const rational& r) {
+        return to_string(r.neu) + " / " + to_string(r.den);
+    }
 };

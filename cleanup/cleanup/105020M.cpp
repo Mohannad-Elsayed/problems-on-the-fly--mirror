@@ -1,63 +1,47 @@
-#pragma GCC optimize("O2,unroll-loops,fast-math")
-#include <bits/stdc++.h>
+// #define ONLINE_JUDGE
+#include "bits/stdc++.h"
 using namespace std;
-#define forr(i, st, end) for (size_t i = st; i < end; i++)
-#define int long long
-int __ceil (int m, int a) { return (m + a - 1) / a; }
-
-vector<int> a(1e5);
-map<int, int> mp;
-
-inline void precomute () {
-    iota(a.begin(), a.end(), 0);
-    forr(i, 1, 1e5) {
-        a[i] += a[i-1];
-        mp[a[i]] = i;
-    }
-    mp[a[0]] = 0;
+#if __has_include("cleanup/debug.h") && (!defined(ONLINE_JUDGE))
+    #include "cleanup/debug.h"
+#else
+    #pragma message("debug.h not found, or ONLINE_JUDGE defined.")
+    #define print(...) 69
+    #define printarr(...) 69
+#endif
+using ll = long long;
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+#define kill(x) return void(cout << (x));
+#define each(x, v) for (auto &x : (v))
+template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
+template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
+template<class T> void getv(T& v) {each(i, v)cin>>i;}
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+int rnglr(int l, int r) {return uniform_int_distribution<int>(l, r)(rng);}
+void solve();
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    cin.exceptions(cin.failbit);
+    int tt = 1;
+    cin >> tt;
+    while(tt--) {
+        solve();
+        if(tt) cout << '\n';
+    }return 0;
 }
-
-
-inline void solve() {
-    int n; cin >> n;
-    int l = 0, r = a.size() - 1;
-    int m, ans = -1;
-
-    while (l <= r) {
-        m = (l + r) / 2;
-        if (a[m] >= n) {
-            ans = m;
-            r = m - 1;
-        } else l = m + 1;
-    }
-
-    if (ans == -1) {
-        cout << -1;
-        return;
-    }
-
-    int ri = min(n - 1, (int) a.size() - 1);
-    forr(i, ans, ri + 1) {
-        if (i >= a.size()) {
-            cout << -1;
-            return;
-        }
-        if (mp.count(a[i] - n) and i < n) {
-            cout << mp[a[i] - n] + 1 << ' ' << i;
+#define int ll
+void solve() {
+    int x, t, l, r; cin >> x;
+    for (int k = 2; (k * (k-1) / 2) < x; k++) {
+        t = x - (k*(k-1))/2;
+        if (t % k != 0)
+            continue;
+        l = t / k;
+        r = l+k-1;
+        if (l > 0 && r < x) {
+            cout << l << ' ' << r;
             return;
         }
     }
     cout << -1;
-}
-
-signed main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr), cout.tie(nullptr);
-    int __t = 1;
-    cin >> __t;
-    precomute();
-    while (__t--) {
-        solve();
-        cout << '\n';
-    }
 }

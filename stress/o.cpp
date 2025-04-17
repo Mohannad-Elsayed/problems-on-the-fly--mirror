@@ -1,54 +1,60 @@
-#define ONLINE_JUDGE
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
-#ifndef ONLINE_JUDGE
-    // #include "cleanup/debug.h"
-#else
-    #define print(...) 69
-    #define printarr(...) 69
-#endif
-using ll = long long;
-#define all(x) (x).begin(), (x).end()
-#define rall(x) (x).rbegin(), (x).rend()
-#define kill(x) return void(cout << (x));
-#define each(x, v) for (auto &x : (v))
-template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
-template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
-template<class T> void getv(T& v) {each(i, v)cin>>i;}
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<> uid(1, 1ll<<30);
-void solve();
-int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    cin.exceptions(cin.failbit);
-    int tt = 1;
-    // cin >> tt;
-    while(tt--) {
-        solve();
-        if(tt) cout << '\n';
-    }return 0;
-}
+
+#define Dattebayo() ios::sync_with_stdio(0),cin.tie(nullptr),cout.tie(nullptr)
+#define all(v) ((v).begin()), ((v).end())
+#define YES cout<<"YES\n"
+#define NO cout<<"NO\n"
+#define ll long long
+#define int long long
+#define endl "\n"
+#define pii pair <int,int>
+///Where there's a will there's a way.
+///Well, نـورت الكــود يـعـمـنـا
 
 void solve() {
-    int n, m, u, v; cin >> n >> m;
-    vector<vector<int>> g(n+1);
-    vector<int> vis(n+1), ans(n+1);
-    while(m--) {
-        cin >> u >> v;
-        g[v].push_back(u);
+    int n, m, k; cin >> n >> m >> k;
+    if(n%k == 0 || m%k == 0) {
+        for(int i = 1; i <= n; i++) {
+            int cnt = (i %k) + 1;
+            for(int j = 1; j <= m; j++) {
+                cout << cnt ++ << " ";
+                if(cnt > k) cnt = 1;
+            }
+            cout << endl;
+        }
     }
-    int c = 1;
-    function<void(int)> dfs = [&](int u) {
-        vis[u] = 1;
-        each(v, g[u]) 
-            if (!vis[v])
-                dfs(v);
-        ans[u] = c++;
-    };
-    for (int i = 1; i <= n; i++)
-        if (!vis[i])
-            dfs(i);
-    for (int i = 1; i <= n; i++) {
-        cout << ans[i] << ' ';
+    else {
+        int cnt = 1;
+        for(int i = 1; i <= n; i++) {
+            for(int j = 1; j <= m; j++) {
+                cout << cnt ++ << " ";
+                if(cnt > k) cnt = 1;
+            }
+            cout << endl;
+        }
     }
+}
+
+void setIO() {
+#ifndef ONLINE_JUDGE
+    // freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+}
+
+int32_t main ()
+{
+    setIO();
+    Dattebayo();
+
+    int t = 1, i = 1;
+    cin >> t;
+
+    while (t --) {
+        // cout << "Case " << i ++ << ": ";
+        solve();
+        // cout << endl;
+    }
+
 }

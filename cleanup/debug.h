@@ -1,7 +1,12 @@
 #define cerr cout
 #undef _GLIBCXX_DEBUG
-
+#include <string>
+#include <vector>
+#include <bitset>
+#include <algorithm>
+#include <iostream>
 using namespace std;
+
 string to_string(char ch);
 template <typename A, typename B>
 string to_string(pair<A, B> p);

@@ -1,131 +1,73 @@
-// {{{ by shik
-// #include <stdio.h>
-#include <bits/stdc++.h>
-#include <unistd.h>
-#define SZ(x) ((int)(x).size())
-#define ALL(x) begin(x),end(x)
-#define RALL(x) rbegin(x),rend(x)
-#define REP(i,n) for ( int i=0; i<int(n); i++ )
-#define REP1(i,a,b) for ( int i=(a); i<=int(b); i++ )
-#define FOR(it,c) for ( auto it=(c).begin(); it!=(c).end(); it++ )
-#define MP make_pair
-#define PB push_back
+#include <algorithm>
+#include <array>
+#include <bitset>
+#include <cassert>
+#include <chrono>
+#include <cmath>
+#include <cstdint>
+#include <cstring>
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <numeric>
+#include <queue>
+#include <random>
+#include <ranges>
+#include <set>
+#include <vector>
 using namespace std;
-typedef int64_t LL;
-typedef pair<int,int> PII;
-typedef vector<int> VI;
 
-#ifdef SHIK
-template<typename T>
-void _dump( const char* s, T&& head ) { cerr<<s<<"="<<head<<endl; }
+// http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0200r0.html
+template<class Fun> class y_combinator_result {
+    Fun fun_;
+public:
+    template<class T> explicit y_combinator_result(T &&fun): fun_(std::forward<T>(fun)) {}
+    template<class ...Args> decltype(auto) operator()(Args &&...args) { return fun_(std::ref(*this), std::forward<Args>(args)...); }
+};
+template<class Fun> decltype(auto) y_combinator(Fun &&fun) { return y_combinator_result<std::decay_t<Fun>>(std::forward<Fun>(fun)); }
 
-template<typename T, typename... Args>
-void _dump( const char* s, T&& head, Args&&... tail ) {
-    int c=0;
-    while ( *s!=',' || c!=0 ) {
-        if ( *s=='(' || *s=='[' || *s=='{' ) c++;
-        if ( *s==')' || *s==']' || *s=='}' ) c--;
-        cerr<<*s++;
-    }
-    cerr<<"="<<head<<", ";
-    _dump(s+1,tail...);
-}
 
-#define dump(...) do { \
-    fprintf(stderr, "%s:%d - ", __PRETTY_FUNCTION__, __LINE__); \
-    _dump(#__VA_ARGS__, __VA_ARGS__); \
-} while (0)
+template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
+template<typename... Args> ostream& operator<<(ostream& os, const tuple<Args...>& t) { os << '('; apply([&os](const Args&... args) { size_t n = 0; ((os << args << (++n != sizeof...(Args) ? ", " : "")), ...); }, t); return os << ')'; }
+template<typename T_container, typename T = typename enable_if<!is_same<T_container, string>::value, typename T_container::value_type>::type> ostream& operator<<(ostream &os, const T_container &v) { os << '{'; string sep; for (const T &x : v) os << sep << x, sep = ", "; return os << '}'; }
 
-template<typename Iter>
-ostream& _out( ostream &s, Iter b, Iter e ) {
-    s<<"[";
-    for ( auto it=b; it!=e; it++ ) s<<(it==b?"":" ")<<*it;
-    s<<"]";
-    return s;
-}
-
-template<typename A, typename B>
-ostream& operator <<( ostream &s, const pair<A,B> &p ) { return s<<"("<<p.first<<","<<p.second<<")"; }
-template<typename T>
-ostream& operator <<( ostream &s, const vector<T> &c ) { return _out(s,ALL(c)); }
-template<typename T, size_t N>
-ostream& operator <<( ostream &s, const array<T,N> &c ) { return _out(s,ALL(c)); }
-template<typename T>
-ostream& operator <<( ostream &s, const set<T> &c ) { return _out(s,ALL(c)); }
-template<typename A, typename B>
-ostream& operator <<( ostream &s, const map<A,B> &c ) { return _out(s,ALL(c)); }
+void dbg_out() { cerr << endl; }
+template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr << ' ' << H; dbg_out(T...); }
+#ifdef NEAL_DEBUG
+#define dbg(...) cerr << '[' << __FILE__ << ':' << __LINE__ << "] (" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
 #else
-#define dump(...)
+#define dbg(...)
 #endif
 
-template<typename T>
-void _R( T &x ) { cin>>x; }
-void _R( int &x ) { scanf("%d",&x); }
-void _R( int64_t &x ) { scanf("%" PRId64,&x); }
-void _R( double &x ) { scanf("%lf",&x); }
-void _R( char &x ) { scanf(" %c",&x); }
-void _R( char *x ) { scanf("%s",x); }
 
-void R() {}
-template<typename T, typename... U>
-void R( T& head, U&... tail ) {
-    _R(head);
-    R(tail...);
+void run_case() {
+    int N, M, K;
+    cin >> N >> M >> K;
+    int nk = gcd(N, K);
+    int mk = K / nk;
+    assert(M % mk == 0);
+
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < M; j++) {
+            int a = i % nk * mk + (i + j) % mk + 1;
+
+            if (mk == 1)
+                a = j % mk * nk + (i + j) % nk + 1;
+
+            cout << a << (j < M - 1 ? ' ' : '\n');
+        }
 }
 
-template<typename T>
-void _W( const T &x ) { cout<<x; }
-void _W( const int &x ) { printf("%d",x); }
-void _W( const long long &x ) { printf("%" PRId64,x); }
-template<typename T>
-void _W( const vector<T> &x ) {
-    for ( auto i=x.cbegin(); i!=x.cend(); i++ ) {
-        if ( i!=x.cbegin() ) putchar(' ');
-        _W(*i);
-    }
-}
-
-void W() {}
-template<typename T, typename... U>
-void W( const T& head, const U&... tail ) {
-    _W(head);
-    putchar(sizeof...(tail)?' ':'\n');
-    W(tail...);
-}
-
-template<typename T> inline bool chkmax( T &a, const T &b ) { return b>a ? a=b,true : false; }
-template<typename T> inline bool chkmin( T &a, const T &b ) { return b<a ? a=b,true : false; }
-template<typename T, typename F>
-inline void sort_uniq( vector<T> &v, F f ) {
-    sort(ALL(v),f);
-    v.resize(unique(ALL(v))-v.begin());
-}
-
-template<typename T> using MaxHeap = priority_queue<T>;
-template<typename T> using MinHeap = priority_queue<T,vector<T>,greater<T>>;
-
-
-const int N=1e5+10;
-int n,m,deg[N],per[N];
-VI e[N];
 int main() {
-	// int t; cin >> t;
-	// while(t--) {
-		R(n,m);
-		REP(i,m) {
-			int a,b;
-			R(a,b);
-			e[b].PB(a);
-			deg[a]++;
-		}
-		MaxHeap<int> q;
-		REP1(i,1,n) if ( deg[i]==0 ) q.push(i);
-		for ( int i=n; i>=1; i-- ) {
-			int x=q.top(); q.pop();
-			per[x]=i;
-			for ( int j:e[x] ) if ( --deg[j]==0 ) q.push(j);
-		}
-		W(VI(per+1,per+n+1));
-	// }
-    return 0;
+    ios::sync_with_stdio(false);
+#ifndef NEAL_DEBUG
+    cin.tie(nullptr);
+#endif
+
+    int tests;
+    cin >> tests;
+
+    while (tests-- > 0)
+        run_case();
 }

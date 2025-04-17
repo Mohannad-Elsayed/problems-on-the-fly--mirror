@@ -28,27 +28,18 @@ def run_program(program, input_data):
         return f"Error: {process.stderr.strip()}"
 
 def generate_test_case():
-    n = random.randint(2, 100)  # adjust for demo
-    m = random.randint(1, min(n * (n - 1) // 2, n//2))  # limit edges to avoid excessive density
-    edges = set()
-    nodes = list(range(1, n + 1))
-    random.shuffle(nodes)  # Randomize node order to ensure acyclic graph generation
-
-    for i in range(len(nodes)):
-        for j in range(i + 1, len(nodes)):
-            if len(edges) >= m:
-                break
-            edges.add((nodes[i], nodes[j]))  # Ensure directed edge from lower to higher index
-
-    lines = [f"{n} {len(edges)}"]
-    for (v, u) in edges:
-        lines.append(f"{v} {u}")
-    # print("\n".join(lines))
-    return "\n".join(lines)
+    mx = 100
+    while True:
+        n = random.randint(2, mx)
+        m = random.randint(2, mx)
+        k = random.randint(2, n * m)
+        
+        if (n * m) % k == 0 and 2 <= n * m <= 200000:
+            return f"{n} {m} {k}"
 
 #! run two solutions
 def run_two_solutions():
-    test_count = 1
+    test_count = 10
     all_testcases = []
     
     # Collect all test cases
@@ -56,13 +47,13 @@ def run_two_solutions():
         all_testcases.append(generate_test_case())
     
     # Build a single input string in "Codeforces style"
-    # input_data = f"{test_count}\n" + "\n".join(all_testcases)
-    input_data = "\n".join(all_testcases)
-    print(input_data)
+    input_data = f"{test_count}\n" + "\n".join(all_testcases)
+    # input_data = "\n".join(all_testcases)
+    # print(input_data)
     
     # Run each program once
-    brute_output = run_program("b.exe", input_data).splitlines()
-    optimized_output = run_program("o.exe", input_data).splitlines()
+    brute_output = run_program("b", input_data).splitlines()
+    optimized_output = run_program("o", input_data).splitlines()
     
     # print(brute_output)
     # print(optimized_output)
@@ -95,8 +86,8 @@ def run_two_solutions_with_check():
     # print(input_data)
     
     # Run each program once
-    brute_output = run_program("b.exe", input_data).splitlines()
-    optimized_output = run_program("o.exe", input_data).splitlines()
+    brute_output = run_program("b", input_data).splitlines()
+    optimized_output = run_program("o", input_data).splitlines()
     # print(brute_output)
     # print(optimized_output)
     
@@ -154,23 +145,43 @@ def run_two_solutions_with_check():
 
 def check_solution(inp, outp):
     """Check the solution output for correctness."""
-    # print(inp, outp)
+    # Parse input
+    n, m, k = map(int, inp.split())
     
-    a, b = int(inp), int(outp)
-    c = a ^ b
-    p = 1
-    while p < a:
-        p *= 2
-    if (p == a or p-1 == a) and b == -1:
-        return True
-    if (p == a or p-1 == a) and b != -1:
-        return True
-    return (a+b>c and a+c>b and b+c>a)
+    # Parse output grid
+    grid = [list(map(int, row.split())) for row in outp.splitlines()]
+    # print("grid ", grid)
+    # Check grid dimensions
+    if len(grid) != n or any(len(row) != m for row in grid):
+        return False
+    
+    # Check range of integers and count occurrences
+    counts = [0] * (k + 1)
+    for i in range(n):
+        for j in range(m):
+            if not (1 <= grid[i][j] <= k):
+                return False
+            counts[grid[i][j]] += 1
+    
+    # Check if each integer from 1 to k appears an equal number of times
+    expected_count = (n * m) // k
+    if any(count != expected_count for count in counts[1:]):
+        return False
+    
+    # Check adjacency constraint
+    for i in range(n):
+        for j in range(m):
+            if i > 0 and grid[i][j] == grid[i - 1][j]:  # Check above
+                return False
+            if j > 0 and grid[i][j] == grid[i][j - 1]:  # Check left
+                return False
+    
+    return True
         
         
 #! solution checker
 def run_sol_checker():
-    test_count = 1000000
+    test_count = 2
     all_testcases = []
     
     # Collect all test cases
@@ -182,8 +193,8 @@ def run_sol_checker():
     # print(input_data)
 
     # Run the optimized program
-    optimized_output = run_program("o.exe", input_data).splitlines()
-
+    optimized_output = run_program("o", input_data).splitlines()
+    print(optimized_output)
 
     # Check the outputs line by line
     for i in range(test_count):
@@ -199,9 +210,9 @@ def run_sol_checker():
         print("All test cases passed!")
 
 def main():
-    run_two_solutions()
+    # run_two_solutions()
     # run_two_solutions_with_check()
-    # run_sol_checker()
+    run_sol_checker()
 
 if __name__ == "__main__":
     main()

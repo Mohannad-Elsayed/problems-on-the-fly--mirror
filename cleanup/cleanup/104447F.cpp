@@ -1,69 +1,67 @@
-// #define ONLINE_JUDGE
 #include "bits/stdc++.h"
 using namespace std;
-#ifndef ONLINE_JUDGE
-    #include "cleanup/debug.h"
-#else
-    #define print(...) 69
-    #define printarr(...) 69
-#endif
 using ll = long long;
-#define all(x) (x).begin(), (x).end()
-#define rall(x) (x).rbegin(), (x).rend()
+
+#define fastio ios_base::sync_with_stdio(false), cin.tie(nullptr)
 #define kill(x) return void(cout << (x));
-#define each(x, v) for (auto &x : (v))
-template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
-template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
-template<class T> void getv(T& v) {each(i, v)cin>>i;}
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<> uid(1, 1ll<<30);
-void solve();
-int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    cin.exceptions(cin.failbit);
-    int tt = 1;
+
+// Function to read a vector of strings or numbers
+template<typename T>
+void getv(vector<T>& v) {
+    for(auto &x: v)
+        cin >> x;
+}
+
+void solve() {
+    int n, k; 
+    cin >> n >> k;
+    vector<string> vs(n);
+    getv(vs);
+
+    // For each string, calculate the minimum modifications to make it a palindrome.
+    vector<int> mnpal(n, 0);
+    for (int i = 0; i < n; i++){
+        int sz = vs[i].size();
+        for (int j = 0; j < sz / 2; j++) {
+            if(vs[i][j] != vs[i][sz - j - 1])
+                mnpal[i]++;
+        }
+    }
+    
+    // Read the scores.
+    vector<ll> scores(n);
+    getv(scores);
+    
+    // Use a sliding window from l to r where:
+    //   - currCost is the total modifications required
+    //   - currScore is the total score of the window
+    ll currCost = 0, currScore = 0, ans = 0;
+    int l = 0;
+    for (int r = 0; r < n; r++) {
+        currCost += mnpal[r];
+        currScore += scores[r];
+        
+        // Shrink the window from the left until the cost is at most k.
+        while (l <= r && currCost > k) {
+            currCost -= mnpal[l];
+            currScore -= scores[l];
+            l++;
+        }
+        
+        // At this point, the window [l, r] is valid.
+        ans = max(ans, currScore);
+    }
+    
+    cout << ans;
+}
+
+int main(){
+    fastio;
+    int tt;
     cin >> tt;
     while(tt--) {
         solve();
-        if(tt) cout << '\n';
-    }return 0;
-}
-#define int ll
-void solve() {
-    int n, k, ans = 0; cin >> n >> k;
-
-    string s;
-    vector<int> scores(n), mnpal(n);
-    vector<string> vs(n);
-
-    getv(vs);
-    // print(vs);
-    for (int i = 0; i<n; i++) {
-        int sz = vs[i].size();
-        for (int pal = 0; pal < sz/2; pal++) {
-            mnpal[i] += vs[i][pal] != vs[i][sz-pal-1];
-        }
+        cout << '\n';
     }
-    getv(scores);
-
-    print(mnpal);
-    print(scores);
-    int currsumk = 0, currsumsc = 0;
-    for (int l = 0, r = 0; l < n && r < n; l++) {
-        while(r < n && currsumk + mnpal[r] <= k) {
-            if(currsumsc > ans) ans = currsumsc;
-            currsumsc += scores[r];
-            currsumk += mnpal[r];
-            if(currsumsc > ans) ans = currsumsc;
-            r++;
-        }
-        if(l < r) {
-            currsumk -= mnpal[l];
-            currsumsc -= scores[l];
-        } else {
-            r = l + 1;
-        }
-        // if(currsumsc > ans) ans = currsumsc;
-    }
-    cout << ans;
+    return 0;
 }

@@ -1,0 +1,16 @@
+import sys
+import os
+import random
+# os.makedirs("cleanup/hacks/", exist_ok = True)
+# sys.stdout = open("cleanup/hacks/E1", "w")
+powers = [2**x-1 for x in range(30,31)]
+random.seed(832746238746345)
+T = 4
+print(T)
+N = int(2e5//T)
+for __ in range(T):
+    print(N)
+    for _ in range(N):
+        if _ == N-1:
+            print(random.choice(powers), end='\n')
+        else: print(random.choice(powers), end=' ')

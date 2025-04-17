@@ -63,20 +63,16 @@ public:
 };
 
 struct info {
-    int64_t sum, oring, anding, ggcd;
-    info(int64_t x) {
-        sum = oring = anding = ggcd = x;
+    int sum;
+    info(int x) {
+        sum = x;
     }
     info() { // default value
-        sum = oring = ggcd = 0;
-        anding = ~0;
+        sum = 0;
     }
     friend info operator+(const info &l, const info &r) {
         info ret;
-        ret.sum = l.sum+r.sum;
-        ret.ggcd = gcd(l.ggcd, r.ggcd);
-        ret.anding = l.anding & r.anding;
-        ret.oring = l.oring | r.oring;
+        ret.sum = l.sum + r.sum;
         return ret;
     }
 };

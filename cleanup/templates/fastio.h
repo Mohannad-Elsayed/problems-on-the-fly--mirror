@@ -1,618 +1,314 @@
-// Thanks for https://zenn.dev/mizar/articles/fc87d667153080
-class FastIstream : public std::ios_base {
-    constexpr static int buffersize = (1 << 18) - 1;
-    char buffer[buffersize + 1];
-    char* cur = buffer;
-    char* eof = buffer;
-    inline void reload(ptrdiff_t w) {
-        if (eof - w < cur) [[unlikely]] {
-            if (eof == buffer + buffersize) [[likely]] {
-                ptrdiff_t rem = eof - cur;
-                std::memcpy(buffer, cur, rem);
-                *(eof = buffer + rem + read(0, buffer + rem, buffersize - rem)) = '\0';
-                cur = buffer;
-            } else if (eof <= cu>r) {
-                *(eof = buffer + read(0, buffer, buffersize)) = '\0';
-                cur = buffer;
+#pragma GCC optimize("O3,unroll-loops")
+#pragma GCC target("avx2,bmi,bmi2,popcnt,lzcnt")
+#pragma GCC target("avx2,sse4.2,bmi,bmi2,popcnt,lzcnt")
+using ll = int64_t;
+using ull = uint64_t;
+using ld = long double;
+
+struct IOPre {
+    static constexpr int TEN = 10, SZ = TEN * TEN * TEN * TEN;
+    std::array<char, 4 * SZ> num;
+    constexpr IOPre() : num{} {
+        for (int i = 0; i < SZ; i++) {
+            int n = i;
+            for (int j = 3; j >= 0; j--) {
+                num[i * 4 + j] = static_cast<char>(n % TEN + '0');
+                n /= TEN;
             }
         }
-    }
-public:
-    FastIstream& operator>>(bool& n) {
-        reload(2);
-        n = *cur == '1';
-        cur += 2;
-        return *this;
-    }
-    FastIstream& operator>>(short& n) {
-        reload(8);
-        short neg = (*cur == '-') * -2 + 1;
-        cur += neg == -1;
-        uint64_t tmp = *(uint64_t*) cur ^ 0x3030303030303030u;
-        int clz = std::countl_zero((tmp & 0x1010101010101010u) & (-(tmp & 0x1010101010101010u))) + 5;
-        cur += (72 - clz) >> 3;
-        tmp = ((tmp << clz) * 0xa01ull) >> 8 & 0x00ff00ff00ff00ffull;
-        tmp = (tmp * 0x640001ull) >> 16 & 0x0000ffff0000ffffull;
-        n = (short) ((tmp * 0x271000000001ull) >> 32) * neg;
-        return *this;
-    }
-    FastIstream& operator>>(unsigned short& n) {
-        reload(8);
-        uint64_t tmp = *(uint64_t*) cur ^ 0x3030303030303030u;
-        int clz = std::countl_zero((tmp & 0x1010101010101010u) & (-(tmp & 0x1010101010101010u))) + 5;
-        cur += (72 - clz) >> 3;
-        tmp = ((tmp << clz) * 0xa01ull) >> 8 & 0x00ff00ff00ff00ffull;
-        tmp = (tmp * 0x640001ull) >> 16 & 0x0000ffff0000ffffull;
-        n = (unsigned short) ((tmp * 0x271000000001ull) >> 32);
-        return *this;
-    }
-    FastIstream& operator>>(unsigned int& n) {
-        reload(16);
-        uint64_t tmp = *(uint64_t*) cur ^ 0x3030303030303030u, tmp2 = tmp & 0x1010101010101010u;
-        if (tmp2) {
-            int clz = std::countl_zero(tmp2 & -tmp2) + 5;
-            cur += (72 - clz) >> 3;
-            tmp = ((tmp << clz) * 0xa01ull) >> 8 & 0x00ff00ff00ff00ffull;
-            tmp = (tmp * 0x640001ull) >> 16 & 0x0000ffff0000ffffull;
-            n = (unsigned) ((tmp * 0x271000000001ull) >> 32);
-        } else {
-            cur += 8;
-            tmp = (tmp * 0xa01ull) >> 8 & 0x00ff00ff00ff00ffull;
-            tmp = (tmp * 0x640001ull) >> 16 & 0x0000ffff0000ffffull;
-            n = (unsigned) ((tmp * 0x271000000001ull) >> 32);
-            if (char c = *(cur++); c >= '0') {
-                n = 10 * n + (c - '0');
-                if ((c = *(cur++)) >= '0') n = 10 * n + (c - '0'), ++cur;
-            }
-        }
-        return *this;
-    }
-    FastIstream& operator>>(int& n) {
-        reload(16);
-        int neg = (*cur == '-') * -2 + 1;
-        cur += neg == -1;
-        uint64_t tmp = *(uint64_t*) cur ^ 0x3030303030303030u, tmp2 = tmp & 0x1010101010101010u;
-        if (tmp2) {
-            int clz = std::countl_zero(tmp2 & -tmp2) + 5;
-            cur += (72 - clz) >> 3;
-            tmp = ((tmp << clz) * 0xa01ull) >> 8 & 0x00ff00ff00ff00ffull;
-            tmp = (tmp * 0x640001ull) >> 16 & 0x0000ffff0000ffffull;
-            n = (int) ((tmp * 0x271000000001ull) >> 32);
-        } else {
-            cur += 8;
-            tmp = (tmp * 0xa01ull) >> 8 & 0x00ff00ff00ff00ffull;
-            tmp = (tmp * 0x640001ull) >> 16 & 0x0000ffff0000ffffull;
-            n = (int) ((tmp * 0x271000000001ull) >> 32);
-            if (char c = *(cur++); c >= '0') {
-                n = 10 * n + (c - '0');
-                if ((c = *(cur++)) >= '0') n = 10 * n + (c - '0'), ++cur;
-            }
-        }
-        n *= neg;
-        return *this;
-    }
-    FastIstream& operator>>(unsigned long long& n) {
-        reload(32);
-#ifndef __AVX512VL__
-        n = 0;
-        while (*cur >= '0') n = 10 * n + (*(cur++) - '0');
-        ++cur;
-#else
-        unsigned long long tmp[3], tmp2[3];
-        std::memcpy(tmp, cur, 24);
-        int width;
-        if ((tmp2[0] = (tmp[0] ^= 0x3030303030303030) & 0x1010101010101010)) [[unlikely]] {
-            width = std::countr_zero(tmp2[0]) - 4;
-            n = ((((((tmp[0] << (64 - width)) * 0xa01ull) >> 8 & 0x00ff00ff00ff00ffull) * 0x640001ull) >> 16 & 0x0000ffff0000ffffull) * 0x271000000001ull) >> 32;
-            cur += (width >> 3) + 1;
-        } else {
-            __m256i tmp3;
-            if ((tmp2[1] = (tmp[1] ^= 0x3030303030303030) & 0x1010101010101010)) [[unlikely]] {
-                width = 60 + std::countr_zero(tmp2[1]);
-                if (width == 64) [[unlikely]]
-                    tmp3 = _mm256_setr_epi64x(0, 0, 0, tmp[0]);
-                else tmp3 = _mm256_setr_epi64x(0, 0, tmp[0] << (128 - width), tmp[1] << (128 - width) | tmp[0] >> (width - 64));
-            } else {
-                width = 124 + std::countr_zero((tmp[2] ^= 0x3030303030303030) & 0x1010101010101010);
-                if (width == 128) [[unlikely]]
-                    tmp3 = _mm256_setr_epi64x(0, 0, tmp[0], tmp[1]);
-                else tmp3 = _mm256_setr_epi64x(0, tmp[0] << (192 - width), tmp[1] << (192 - width) | tmp[0] >> (width - 128), tmp[2] << (192 - width) | tmp[1] >> (width - 128));
-            }
-            cur += (width >> 3) + 1;
-            alignas(32) unsigned long long res[4];
-            _mm256_store_epi64(res, _mm256_srli_epi64(_mm256_mullo_epi64(_mm256_srli_epi32(_mm256_mullo_epi32(_mm256_srli_epi16(_mm256_mullo_epi16(_mm256_and_si256(tmp3, _mm256_set1_epi8(0x0f)), _mm256_set1_epi16(0xa01)), 8), _mm256_set1_epi32(0x640001)), 16), _mm256_set1_epi64x(0x271000000001)), 32));
-            n = res[1] * 10000000000000000 + res[2] * 100000000 + res[3];
-        }
-#endif
-        return *this;
-    }
-    FastIstream& operator>>(long long& n) {
-        reload(32);
-        long long neg = (*cur == '-') * -2 + 1;
-        cur += neg == -1;
-#ifndef __AVX512VL__
-        n = 0;
-        while (*cur >= '0') n = 10 * n + (*(cur++) - '0');
-        ++cur;
-        n *= neg;
-#else
-        unsigned long long tmp[3], tmp2[3];
-        std::memcpy(tmp, cur, 24);
-        int width;
-        if ((tmp2[0] = (tmp[0] ^= 0x3030303030303030) & 0x1010101010101010)) [[unlikely]] {
-            width = std::countr_zero(tmp2[0]) - 4;
-            n = neg * (((((((tmp[0] << (64 - width)) * 0xa01ull) >> 8 & 0x00ff00ff00ff00ffull) * 0x640001ull) >> 16 & 0x0000ffff0000ffffull) * 0x271000000001ull) >> 32);
-            cur += (width >> 3) + 1;
-        } else {
-            __m256i tmp3;
-            if ((tmp2[1] = (tmp[1] ^= 0x3030303030303030) & 0x1010101010101010)) [[unlikely]] {
-                width = 60 + std::countr_zero(tmp2[1]);
-                if (width == 64) [[unlikely]]
-                    tmp3 = _mm256_setr_epi64x(0, 0, 0, tmp[0]);
-                else tmp3 = _mm256_setr_epi64x(0, 0, tmp[0] << (128 - width), tmp[1] << (128 - width) | tmp[0] >> (width - 64));
-            } else {
-                width = 124 + std::countr_zero((tmp[2] ^= 0x3030303030303030) & 0x1010101010101010);
-                if (width == 128) [[unlikely]]
-                    tmp3 = _mm256_setr_epi64x(0, 0, tmp[0], tmp[1]);
-                else tmp3 = _mm256_setr_epi64x(0, tmp[0] << (192 - width), tmp[1] << (192 - width) | tmp[0] >> (width - 128), tmp[2] << (192 - width) | tmp[1] >> (width - 128));
-            }
-            cur += (width >> 3) + 1;
-            alignas(32) long long res[4];
-            _mm256_store_epi64(res, _mm256_srli_epi64(_mm256_mullo_epi64(_mm256_srli_epi32(_mm256_mullo_epi32(_mm256_srli_epi16(_mm256_mullo_epi16(_mm256_and_si256(tmp3, _mm256_set1_epi8(0x0f)), _mm256_set1_epi16(0xa01)), 8), _mm256_set1_epi32(0x640001)), 16), _mm256_set1_epi64x(0x271000000001)), 32));
-            n = neg * (res[1] * 10000000000000000 + res[2] * 100000000 + res[3]);
-        }
-#endif
-        return *this;
-    }
-    FastIstream& operator>>(long& n) {
-        long long x;
-        operator>>(x);
-        n = x;
-        return *this;
-    }
-    FastIstream& operator>>(unsigned long& n) {
-        unsigned long long x;
-        operator>>(x);
-        n = x;
-        return *this;
-    }
-    friend FastIstream& operator>>(FastIstream& is, char& c) {
-        is.reload(2);
-        c = *is.cur;
-        is.cur += 2;
-        return is;
-    }
-    friend FastIstream& operator>>(FastIstream& is, unsigned char& c) {
-        is.reload(2);
-        c = *is.cur;
-        is.cur += 2;
-        return is;
-    }
-    friend FastIstream& operator>>(FastIstream& is, signed char& c) {
-        is.reload(2);
-        c = *is.cur;
-        is.cur += 2;
-        return is;
-    }
-    friend FastIstream& operator>>(FastIstream& is, char* s) {
-        while (true) {
-            while (*is.cur > ' ' && is.cur != is.eof) *(s++) = *is.cur, ++is.cur;
-            if (is.cur == is.eof) is.reload(is.buffersize);
-            else break;
-        }
-        ++is.cur;
-        *s = '\0';
-        return is;
-    }
-    friend FastIstream& operator>>(FastIstream& is, std::string& s) {
-        s.clear();
-        while (true) {
-            char* st = is.cur;
-            while (*is.cur > ' ' && is.cur != is.eof) ++is.cur;
-            s += std::string_view(st, is.cur - st);
-            if (is.cur == is.eof) is.reload(is.buffersize);
-            else break;
-        }
-        ++is.cur;
-        return is;
-    }
-    FastIstream& operator>>(float& f) {
-        std::string s;
-        (*this) >> s;
-        std::from_chars(s.c_str(), s.c_str() + s.length(), f);
-        return *this;
-    }
-    FastIstream& operator>>(double& f) {
-        std::string s;
-        (*this) >> s;
-        std::from_chars(s.c_str(), s.c_str() + s.length(), f);
-        return *this;
-    }
-    FastIstream& operator>>(long double& f) {
-        std::string s;
-        (*this) >> s;
-        std::from_chars(s.c_str(), s.c_str() + s.length(), f);
-        return *this;
-    }
-    template<std::ranges::range T> friend FastIstream& operator>>(FastIstream& is, T& x) {
-        for (auto& v : x) is >> v;
-        return is;
-    }
-    char getc() {
-        reload(1);
-        return *(cur++);
-    }
-    void seek(int n) {
-        reload(n);
-        cur += n;
-    }
-} fin;
-class FastOstream : public std::ios_base {
-    constexpr static int buffersize = 1 << 18;
-    char buffer[buffersize];
-    char* cur = buffer;
-    inline void reload(ptrdiff_t w) {
-        if (buffer + buffersize - w < cur) [[unlikely]] {
-            [[maybe_unused]] int r = write(1, buffer, cur - buffer);
-            cur = buffer;
-        }
-    }
-    constexpr static std::array<unsigned, 10000> strtable = []() {
-        std::array<unsigned, 10000> res;
-        for (unsigned i = 0; i < 10000; ++i) {
-            unsigned tmp[4];
-            unsigned n = i;
-            tmp[3] = (n % 10 + '0') << 24, n /= 10;
-            tmp[2] = (n % 10 + '0') << 16, n /= 10;
-            tmp[1] = (n % 10 + '0') << 8, n /= 10;
-            tmp[0] = n % 10 + '0';
-            res[i] = tmp[0] + tmp[1] + tmp[2] + tmp[3];
-        }
-        return res;
-    }();
-    constexpr static std::array<unsigned, 10000> strtable2 = []() {
-        std::array<unsigned, 10000> res;
-        for (unsigned i = 0; i < 10000; ++i) {
-            unsigned tmp[4];
-            unsigned n = i;
-            if (i < 10) n *= 1000;
-            else if (i < 100) n *= 100;
-            else if (i < 1000) n *= 10;
-            tmp[3] = (n % 10 + '0') << 24, n /= 10;
-            tmp[2] = (n % 10 + '0') << 16, n /= 10;
-            tmp[1] = (n % 10 + '0') << 8, n /= 10;
-            tmp[0] = n % 10 + '0';
-            res[i] = tmp[0] + tmp[1] + tmp[2] + tmp[3];
-        }
-        return res;
-    }();
-    template<class T> void putfloat(T f) {
-        bool fixed = flags() & std::ios_base::fixed;
-        bool scientific = flags() & std::ios_base::scientific;
-        bool uppercase = flags() & std::ios_base::uppercase;
-        if (fixed && scientific && (flags() & std::ios_base::showbase)) {
-            std::memcpy(cur, (uppercase ? "0X" : "0x"), 2);
-            cur += 2;
-        }
-        std::chars_format fmt = (fixed ? (scientific ? std::chars_format::hex : std::chars_format::fixed) : (scientific ? std::chars_format::scientific : std::chars_format::general));
-        auto conv = [&]() {
-            return std::to_chars(cur, buffer + buffersize, f, fmt, precision());
-        };
-        auto [ptr, ec] = conv();
-        char* p;
-        if (ec == std::errc::value_too_large) {
-            reload(buffersize);
-            p = cur;
-            cur = conv().ptr;
-        } else p = cur, cur = ptr;
-        if (uppercase) {
-            while (p != cur) {
-                if (*p > '9') *p -= ('a' - 'A');
-                ++p;
-            }
-        }
-    }
-public:
-    FastOstream() {
-        precision(6);
-        setf(std::ios_base::showbase);
-    }
-    ~FastOstream() { reload(buffersize); }
-    FastOstream& flush() {
-        reload(buffersize);
-        return *this;
-    }
-    char widen(char c) const { return c; }
-    FastOstream& put(char c) {
-        reload(1);
-        *(cur++) = c;
-        return *this;
-    }
-    FastOstream& operator<<(std::basic_ostream<FastOstream, void>& (*pf)(std::basic_ostream<FastOstream, void>&) );
-    FastOstream& operator<<(std::basic_ios<FastOstream, void>& (*pf)(std::basic_ios<FastOstream, void>&) );
-    FastOstream& operator<<(std::ios_base& (*pf)(std::ios_base&) ) {
-        pf(*this);
-        return *this;
-    }
-    FastOstream& operator<<(bool n) {
-        if (ios_base::flags() & std::ios_base::boolalpha) {
-            if (n) {
-                reload(4);
-                std::memcpy(cur, "true", 4);
-                cur += 4;
-            } else {
-                reload(5);
-                std::memcpy(cur, "false", 5);
-                cur += 5;
-            }
-        } else {
-            reload(1);
-            *(cur++) = '0' + n;
-        }
-        return *this;
-    }
-    FastOstream& operator<<(unsigned short n) {
-        reload(5);
-        if (n >= 10000) {
-            *(cur++) = '0' + n / 10000, n %= 10000;
-            *reinterpret_cast<unsigned*>(cur) = strtable[n];
-            cur += 4;
-        } else if (n >= 1000) {
-            *reinterpret_cast<unsigned*>(cur) = strtable[n];
-            cur += 4;
-        } else if (n >= 100) {
-            *reinterpret_cast<unsigned*>(cur) = strtable[n * 10];
-            cur += 3;
-        } else if (n >= 10) {
-            *(cur++) = '0' + n / 10;
-            *(cur++) = '0' + n % 10;
-        } else *(cur++) = '0' + n;
-        return *this;
-    }
-    FastOstream& operator<<(short n) {
-        reload(6);
-        if (n < 0) *(cur++) = '-', n = -n;
-        if (n >= 10000) {
-            *(cur++) = '0' + n / 10000, n %= 10000;
-            *reinterpret_cast<unsigned*>(cur) = strtable[n];
-            cur += 4;
-        } else if (n >= 1000) {
-            *reinterpret_cast<unsigned*>(cur) = strtable[n];
-            cur += 4;
-        } else if (n >= 100) {
-            *reinterpret_cast<unsigned*>(cur) = strtable[n * 10];
-            cur += 3;
-        } else if (n >= 10) {
-            *reinterpret_cast<unsigned*>(cur) = strtable[n * 100];
-            cur += 2;
-        } else *(cur++) = '0' + n;
-        return *this;
-    }
-    FastOstream& operator<<(unsigned n) {
-        reload(10);
-        unsigned long long buf = 0;
-        char d = 0;
-        if (n >= 100000000) {
-            d = 8;
-            buf = static_cast<unsigned long long>(strtable[n % 10000]) << 32 | strtable[(n / 10000) % 10000];
-            n /= 100000000;
-        } else if (n >= 10000) {
-            d = 4;
-            buf = strtable[n % 10000];
-            n /= 10000;
-        }
-        *reinterpret_cast<unsigned*>(cur) = strtable2[n];
-        cur += (n >= 10) + (n >= 100) + (n >= 1000) + 1;
-        *reinterpret_cast<unsigned long long*>(cur) = buf;
-        cur += d;
-        return *this;
-    }
-    FastOstream& operator<<(int n) {
-        reload(11);
-        if (n < 0) *(cur++) = '-', n = -n;
-        unsigned long long buf = 0;
-        char d = 0;
-        if (n >= 100000000) {
-            d = 8;
-            buf = static_cast<unsigned long long>(strtable[n % 10000]) << 32 | strtable[(n / 10000) % 10000];
-            n /= 100000000;
-        } else if (n >= 10000) {
-            d = 4;
-            buf = strtable[n % 10000];
-            n /= 10000;
-        }
-        *reinterpret_cast<unsigned*>(cur) = strtable2[n];
-        cur += (n >= 10) + (n >= 100) + (n >= 1000) + 1;
-        *reinterpret_cast<unsigned long long*>(cur) = buf;
-        cur += d;
-        return *this;
-    }
-    FastOstream& operator<<(unsigned long long n) {
-        reload(20);
-        static unsigned buf[4];
-        int d = 0;
-        if (n >= 10000000000000000) {
-            d = 16;
-            buf[3] = strtable[n % 10000], n /= 10000;
-            buf[2] = strtable[n % 10000], n /= 10000;
-            buf[1] = strtable[n % 10000], n /= 10000;
-            buf[0] = strtable[n % 10000], n /= 10000;
-        } else if (n >= 1000000000000) {
-            d = 12;
-            buf[2] = strtable[n % 10000], n /= 10000;
-            buf[1] = strtable[n % 10000], n /= 10000;
-            buf[0] = strtable[n % 10000], n /= 10000;
-        } else if (n >= 100000000) {
-            d = 8;
-            buf[1] = strtable[n % 10000], n /= 10000;
-            buf[0] = strtable[n % 10000], n /= 10000;
-        } else if (n >= 10000) {
-            d = 4;
-            buf[0] = strtable[n % 10000], n /= 10000;
-        }
-        *(unsigned*) cur = strtable2[n];
-        cur += (n >= 10) + (n >= 100) + (n >= 1000) + 1;
-        std::memcpy(cur, buf, d);
-        cur += d;
-        return *this;
-    }
-    FastOstream& operator<<(long long n) {
-        reload(21);
-        if (n < 0) *(cur++) = '-', n = -n;
-        static unsigned buf[4];
-        char d = 0;
-        if (n >= 10000000000000000) {
-            d = 16;
-            buf[3] = strtable[n % 10000], n /= 10000;
-            buf[2] = strtable[n % 10000], n /= 10000;
-            buf[1] = strtable[n % 10000], n /= 10000;
-            buf[0] = strtable[n % 10000], n /= 10000;
-        } else if (n >= 1000000000000) {
-            d = 12;
-            buf[2] = strtable[n % 10000], n /= 10000;
-            buf[1] = strtable[n % 10000], n /= 10000;
-            buf[0] = strtable[n % 10000], n /= 10000;
-        } else if (n >= 100000000) {
-            d = 8;
-            buf[1] = strtable[n % 10000], n /= 10000;
-            buf[0] = strtable[n % 10000], n /= 10000;
-        } else if (n >= 10000) {
-            d = 4;
-            buf[0] = strtable[n % 10000], n /= 10000;
-        }
-        *(unsigned*) cur = strtable2[n];
-        cur += (n >= 10) + (n >= 100) + (n >= 1000) + 1;
-        std::memcpy(cur, buf, d);
-        cur += d;
-        return *this;
-    }
-    FastOstream& operator<<(long n) { return operator<<(static_cast<long long>(n)); }
-    FastOstream& operator<<(unsigned long n) { return operator<<(static_cast<unsigned long long>(n)); }
-    FastOstream& operator<<(float f) {
-        reload(16);
-        putfloat(f);
-        return *this;
-    }
-    FastOstream& operator<<(double f) {
-        reload(32);
-        putfloat(f);
-        return *this;
-    }
-    FastOstream& operator<<(long double f) {
-        reload(64);
-        putfloat(f);
-        return *this;
-    }
-    FastOstream& operator<<(const void* p) {
-        reload(18);
-        if (flags() & std::ios_base::showbase) {
-            *cur = '0';
-            *(cur + 1) = flags() & std::ios_base::uppercase ? 'X' : 'x';
-            cur += 2;
-        }
-        cur = std::to_chars(cur, buffer + buffersize, reinterpret_cast<unsigned long long>(p), 16).ptr;
-        return *this;
-    }
-    FastOstream& operator<<(std::nullptr_t) {
-        reload(7);
-        std::memcpy(cur, "nullptr", 7);
-        cur += 7;
-        return *this;
-    }
-    friend FastOstream& operator<<(FastOstream& os, char c) {
-        os.reload(1);
-        *(os.cur++) = c;
-        return os;
-    }
-    friend FastOstream& operator<<(FastOstream& os, signed char c) {
-        os.reload(1);
-        *(os.cur++) = c;
-        return os;
-    }
-    friend FastOstream& operator<<(FastOstream& os, unsigned char c) {
-        os.reload(1);
-        *(os.cur++) = c;
-        return os;
-    }
-    friend FastOstream& operator<<(FastOstream& os, const char* s) {
-        size_t n = std::strlen(s);
-        if (n >= os.buffersize) {
-            os.reload(buffersize);
-            write(1, s, n);
-        } else {
-            os.reload(n);
-            std::memcpy(os.cur, s, n);
-            os.cur += n;
-        }
-        return os;
-    }
-    friend FastOstream& operator<<(FastOstream& os, const std::string& s) {
-        size_t n = s.length();
-        if (n >= os.buffersize) {
-            os.reload(buffersize);
-            write(1, s.data(), n);
-        } else {
-            os.reload(n);
-            std::memcpy(os.cur, s.data(), n);
-            os.cur += n;
-        }
-        return os;
-    }
-    friend FastOstream& operator<<(FastOstream& os, std::string_view s) {
-        size_t n = s.length();
-        if (n >= os.buffersize) {
-            os.reload(buffersize);
-            write(1, s.data(), n);
-        } else {
-            os.reload(n);
-            std::memcpy(os.cur, s.data(), n);
-            os.cur += n;
-        }
-        return os;
-    }
-    template<std::ranges::range T> friend FastOstream& operator<<(FastOstream& os, const T& v) {
-        size_t n = std::distance(std::ranges::begin(v), std::ranges::end(v)), cnt = 0;
-        for (const auto& x : v) {
-            os << x;
-            if (++cnt != n) os << ' ';
-        }
-        return os;
-    }
-#if __GNUC__ >= 6
-    friend FastOstream& operator<<(FastOstream& os, std::_Setprecision prec) {
-        os.precision(prec._M_n);
-        return os;
-    }
-#endif
-} fout;
-namespace std {
-template<> class basic_ios<FastOstream, void> {
-protected:
-    FastOstream& ref;
-public:
-    basic_ios(FastOstream& r) : ref(r) {}
-    char widen(char c) { return ref.widen(c); }
-};
-template<> class basic_ostream<FastOstream, void> : public basic_ios<FastOstream, void> {
-public:
-    basic_ostream(FastOstream& r) : basic_ios(r) {}
-    basic_ostream& put(char c) {
-        basic_ios::ref.put(c);
-        return *this;
-    }
-    basic_ostream& flush() {
-        basic_ios::ref.flush();
-        return *this;
     }
 };
-}  // namespace std
-FastOstream& FastOstream::operator<<(std::basic_ostream<FastOstream, void>& (*pf)(std::basic_ostream<FastOstream, void>&) ) {
-    std::basic_ostream<FastOstream, void> tmp(*this);
-    pf(tmp);
-    return *this;
-}
-FastOstream& FastOstream::operator<<(std::basic_ios<FastOstream, void>& (*pf)(std::basic_ios<FastOstream, void>&) ) {
-    std::basic_ios<FastOstream, void> tmp(*this);
-    pf(tmp);
-    return *this;
-}
+struct IO {
+#if !HAVE_DECL_FREAD_UNLOCKED
+    #define fread_unlocked fread
+#endif
+#if !HAVE_DECL_FWRITE_UNLOCKED
+    #define fwrite_unlocked fwrite
+#endif
+    static constexpr int SZ = 1 << 17, LEN = 32, TEN = 10, HUNDRED = TEN * TEN,
+                         THOUSAND = HUNDRED * TEN, TENTHOUSAND = THOUSAND * TEN,
+                         MAGIC_MULTIPLY = 205, MAGIC_SHIFT = 11, MASK = 15,
+                         TWELVE = 12, SIXTEEN = 16;
+    static constexpr IOPre io_pre = {};
+    std::array<char, SZ> input_buffer, output_buffer;
+    int input_ptr_left, input_ptr_right, output_ptr_right;
+
+    IO()
+        : input_buffer{},
+          output_buffer{},
+          input_ptr_left{},
+          input_ptr_right{},
+          output_ptr_right{} {}
+    IO(const IO&) = delete;
+    IO(IO&&) = delete;
+    IO& operator=(const IO&) = delete;
+    IO& operator=(IO&&) = delete;
+
+    ~IO() { flush(); }
+
+    template <class T>
+    struct is_char {
+        static constexpr bool value = std::is_same_v<T, char>;
+    };
+
+    template <class T>
+    struct is_bool {
+        static constexpr bool value = std::is_same_v<T, bool>;
+    };
+
+    template <class T>
+    struct is_string {
+        static constexpr bool value =
+            std::is_same_v<T, std::string> || std::is_same_v<T, const char*> ||
+            std::is_same_v<T, char*> || std::is_same_v<std::decay_t<T>, char*>;
+    };
+
+    template <class T, class D = void>
+    struct is_custom {
+        static constexpr bool value = false;
+    };
+
+    template <class T>
+    struct is_custom<T, std::void_t<typename T::internal_value_type>> {
+        static constexpr bool value = true;
+    };
+
+    template <class T>
+    struct is_default {
+        static constexpr bool value = is_char<T>::value || is_bool<T>::value ||
+                                      is_string<T>::value ||
+                                      std::is_integral_v<T>;
+    };
+
+    template <class T, class D = void>
+    struct is_iterable {
+        static constexpr bool value = false;
+    };
+
+    template <class T>
+    struct is_iterable<
+        T, typename std::void_t<decltype(std::begin(std::declval<T>()))>> {
+        static constexpr bool value = true;
+    };
+
+    template <class T, class D = void, class E = void>
+    struct is_applyable {
+        static constexpr bool value = false;
+    };
+
+    template <class T>
+    struct is_applyable<T, std::void_t<typename std::tuple_size<T>::type>,
+                        std::void_t<decltype(std::get<0>(std::declval<T>()))>> {
+        static constexpr bool value = true;
+    };
+
+    template <class T>
+    static constexpr bool needs_newline = (is_iterable<T>::value ||
+                                           is_applyable<T>::value) &&
+                                          (!is_default<T>::value);
+
+    template <typename T, typename U>
+    struct any_needs_newline {
+        static constexpr bool value = false;
+    };
+    template <typename T>
+    struct any_needs_newline<T, std::index_sequence<>> {
+        static constexpr bool value = false;
+    };
+    template <typename T, std::size_t I, std::size_t... Is>
+    struct any_needs_newline<T, std::index_sequence<I, Is...>> {
+        static constexpr bool value =
+            needs_newline<decltype(std::get<I>(std::declval<T>()))> ||
+            any_needs_newline<T, std::index_sequence<Is...>>::value;
+    };
+
+    inline void load() {
+        memmove(std::begin(input_buffer),
+                std::begin(input_buffer) + input_ptr_left,
+                input_ptr_right - input_ptr_left);
+        input_ptr_right =
+            input_ptr_right - input_ptr_left +
+            static_cast<int>(fread_unlocked(
+                std::begin(input_buffer) + input_ptr_right - input_ptr_left, 1,
+                SZ - input_ptr_right + input_ptr_left, stdin));
+        input_ptr_left = 0;
+    }
+
+    inline void read_char(char& c) {
+        if (input_ptr_left + LEN > input_ptr_right) load();
+        c = input_buffer[input_ptr_left++];
+    }
+    inline void read_string(std::string& x) {
+        char c;
+        while (read_char(c), c < '!') continue;
+        x = c;
+        while (read_char(c), c >= '!') x += c;
+    }
+    template <class T>
+    inline std::enable_if_t<std::is_integral_v<T>, void> read_int(T& x) {
+        if (input_ptr_left + LEN > input_ptr_right) load();
+        char c = 0;
+        do c = input_buffer[input_ptr_left++];
+        while (c < '-');
+        [[maybe_unused]] bool minus = false;
+        if constexpr (std::is_signed<T>::value == true)
+            if (c == '-') minus = true, c = input_buffer[input_ptr_left++];
+        x = 0;
+        while (c >= '0')
+            x = x * TEN + (c & MASK), c = input_buffer[input_ptr_left++];
+        if constexpr (std::is_signed<T>::value == true)
+            if (minus) x = -x;
+    }
+
+    inline void skip_space() {
+        if (input_ptr_left + LEN > input_ptr_right) load();
+        while (input_buffer[input_ptr_left] <= ' ') input_ptr_left++;
+    }
+
+    inline void flush() {
+        fwrite_unlocked(std::begin(output_buffer), 1, output_ptr_right, stdout);
+        output_ptr_right = 0;
+    }
+
+    inline void write_char(char c) {
+        if (output_ptr_right > SZ - LEN) flush();
+        output_buffer[output_ptr_right++] = c;
+    }
+
+    inline void write_bool(bool b) {
+        if (output_ptr_right > SZ - LEN) flush();
+        output_buffer[output_ptr_right++] = b ? '1' : '0';
+    }
+
+    inline void write_string(const std::string& s) {
+        for (auto x : s) write_char(x);
+    }
+
+    inline void write_string(const char* s) {
+        while (*s) write_char(*s++);
+    }
+
+    inline void write_string(char* s) {
+        while (*s) write_char(*s++);
+    }
+
+    template <typename T>
+    inline std::enable_if_t<std::is_integral_v<T>, void> write_int(T x) {
+        if (output_ptr_right > SZ - LEN) flush();
+        if (!x) {
+            output_buffer[output_ptr_right++] = '0';
+            return;
+        }
+        if constexpr (std::is_signed<T>::value == true)
+            if (x < 0) output_buffer[output_ptr_right++] = '-', x = -x;
+        int i = TWELVE;
+        std::array<char, SIXTEEN> buf{};
+        while (x >= TENTHOUSAND) {
+            memcpy(std::begin(buf) + i,
+                   std::begin(io_pre.num) + (x % TENTHOUSAND) * 4, 4);
+            x /= TENTHOUSAND;
+            i -= 4;
+        }
+        if (x < HUNDRED) {
+            if (x < TEN) {
+                output_buffer[output_ptr_right++] = static_cast<char>('0' + x);
+            } else {
+                std::uint32_t q =
+                    (static_cast<std::uint32_t>(x) * MAGIC_MULTIPLY) >>
+                    MAGIC_SHIFT;
+                std::uint32_t r = static_cast<std::uint32_t>(x) - q * TEN;
+                output_buffer[output_ptr_right] = static_cast<char>('0' + q);
+                output_buffer[output_ptr_right + 1] =
+                    static_cast<char>('0' + r);
+                output_ptr_right += 2;
+            }
+        } else {
+            if (x < THOUSAND) {
+                memcpy(std::begin(output_buffer) + output_ptr_right,
+                       std::begin(io_pre.num) + (x << 2) + 1, 3),
+                    output_ptr_right += 3;
+            } else {
+                memcpy(std::begin(output_buffer) + output_ptr_right,
+                       std::begin(io_pre.num) + (x << 2), 4),
+                    output_ptr_right += 4;
+            }
+        }
+        memcpy(std::begin(output_buffer) + output_ptr_right,
+               std::begin(buf) + i + 4, TWELVE - i);
+        output_ptr_right += TWELVE - i;
+    }
+    template <typename T_>
+    IO& operator<<(T_&& x) {
+        using T = typename std::remove_cv<
+            typename std::remove_reference<T_>::type>::type;
+        static_assert(is_custom<T>::value or is_default<T>::value or
+                      is_iterable<T>::value or is_applyable<T>::value);
+        if constexpr (is_custom<T>::value) {
+            write_int(x.get());
+        } else if constexpr (is_default<T>::value) {
+            if constexpr (is_bool<T>::value) {
+                write_bool(x);
+            } else if constexpr (is_string<T>::value) {
+                write_string(x);
+            } else if constexpr (is_char<T>::value) {
+                write_char(x);
+            } else if constexpr (std::is_integral_v<T>) {
+                write_int(x);
+            }
+        } else if constexpr (is_iterable<T>::value) {
+            // strings are immune
+            using E = decltype(*std::begin(x));
+            constexpr char sep = needs_newline<E> ? '\n' : ' ';
+            int i = 0;
+            for (const auto& y : x) {
+                if (i++) write_char(sep);
+                operator<<(y);
+            }
+        } else if constexpr (is_applyable<T>::value) {
+            // strings are immune
+            constexpr char sep =
+                (any_needs_newline<
+                    T, std::make_index_sequence<std::tuple_size_v<T>>>::value)
+                    ? '\n'
+                    : ' ';
+            int i = 0;
+            std::apply(
+                [this, &sep, &i](auto const&... y) {
+                    (((i++ ? write_char(sep) : void()), this->operator<<(y)),
+                     ...);
+                },
+                x);
+        }
+        return *this;
+    }
+    template <typename T>
+    IO& operator>>(T& x) {
+        static_assert(is_custom<T>::value or is_default<T>::value or
+                      is_iterable<T>::value or is_applyable<T>::value);
+        static_assert(!is_bool<T>::value);
+        if constexpr (is_custom<T>::value) {
+            typename T::internal_value_type y;
+            read_int(y);
+            x = y;
+        } else if constexpr (is_default<T>::value) {
+            if constexpr (is_string<T>::value) {
+                read_string(x);
+            } else if constexpr (is_char<T>::value) {
+                read_char(x);
+            } else if constexpr (std::is_integral_v<T>) {
+                read_int(x);
+            }
+        } else if constexpr (is_iterable<T>::value) {
+            for (auto& y : x) operator>>(y);
+        } else if constexpr (is_applyable<T>::value) {
+            std::apply([this](auto&... y) { ((this->operator>>(y)), ...); }, x);
+        }
+        return *this;
+    }
+
+    IO* tie(std::nullptr_t) { return this; }
+    void sync_with_stdio(bool) {}
+};
+IO io;
+#define cin io
+#define cout io
