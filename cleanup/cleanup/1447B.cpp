@@ -1,47 +1,45 @@
-// #define ONLINE_JUDGE
-#include "bits/stdc++.h"
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include "cleanup/debug.h"
 using namespace std;
-#ifndef ONLINE_JUDGE
-    #include "cleanup/debug.h"
-#else
-    #define print(...)
-    #define printarr(...)
-#endif
 using ll = long long;
-#define all(x) (x).begin(), (x).end()
-#define rall(x) (x).rbegin(), (x).rend()
-#define kill(x) return void(cout << (x));
-#define each(x, v) for (auto &(x) : (v))
-void solve();
-int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    int tt = 1;
-    cin >> tt;
-    while(tt--){
-        solve();
-        if(tt) cout << '\n';
-    }return 0;
+
+void solve() {
+    int n, m;
+    cin >> n >> m;
+    vector<int> cnt;
+    ll sm = 0;
+    vector<vector<int>> v(n, vector<int>(m));
+    
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cin >> v[i][j];
+            if (v[i][j] <= 0)
+                cnt.push_back(-1 * v[i][j]);
+            else
+                sm += v[i][j];
+        }
+    }
+
+    sort(cnt.rbegin(), cnt.rend());
+    print(cnt);
+    int k = cnt.size();
+    for (int i = 0; i < k; i++) {
+        sm += cnt[i];
+    }
+
+    if (k % 2) sm -= 2*cnt[k - 1];
+    cout << sm << endl;
 }
 
-void solve(){
-    int n, m; cin >> n >> m;
-    n *= m;
-    vector<int> v(n);
-    each(i, v)
-        cin >> i;
-    int neg = 0, pos = 0, z = 0, s = 0, mn = 10000;
-    each(i, v){
-        if (i < 0)
-            neg++;
-        if (i > 0)
-            pos++;
-        if (!i)
-            z++;
-        s += abs(i);
-        mn = min(mn, abs(i));
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t; cin >> t;
+    while (t--) {
+        solve();
+
     }
-    if ((neg%2) == 0)
-        kill(s);
-    s -= 2 * mn;
-    kill(s);
+    return 0;
 }
