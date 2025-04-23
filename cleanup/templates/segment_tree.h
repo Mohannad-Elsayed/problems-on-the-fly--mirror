@@ -1,5 +1,5 @@
-template<class info = int64_t>
-class segment_tree {
+template<class info>
+class segmentTree {
     struct node {
         node *l, *r;
         info v;
@@ -45,19 +45,19 @@ class segment_tree {
         }
     }
 public:
-    explicit segment_tree(int n = 1'000'000'000) : size(n), root(new node()) { }
+    explicit segmentTree(int n = 1'000'000'000) : size(n), root(new node()) { }
 
     template<class U>
-    explicit segment_tree(U &arr) : size(int(arr.size()) - 1), root(new node()) {
+    explicit segmentTree(U &arr) : size(int(arr.size()) - 1), root(new node()) {
         build(root, 0, size, arr);
     }
-    ~segment_tree(){
+    ~segmentTree(){
         del(root);
     }
-    void set(int i, info v) { // 0-based
+    void set(int i, info v) {
         set(root, 0, size, i, v);
     }
-    info get(int l, int r) { // 0-based, [l, r]
+    info get(int l, int r) {
         return get(root, 0, size, l, r);
     }
 };
@@ -76,4 +76,4 @@ struct info {
         return ret;
     }
 };
-template<> info segment_tree<info>::defaultVal = info();
+template<> info segmentTree<info>::defaultVal = info();
