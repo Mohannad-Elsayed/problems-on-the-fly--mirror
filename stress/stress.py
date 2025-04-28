@@ -28,18 +28,17 @@ def run_program(program, input_data):
         return f"Error: {process.stderr.strip()}"
 
 def generate_test_case():
-    mx = 100
-    while True:
-        n = random.randint(2, mx)
-        m = random.randint(2, mx)
-        k = random.randint(2, n * m)
-        
-        if (n * m) % k == 0 and 2 <= n * m <= 200000:
-            return f"{n} {m} {k}"
+    n = random.randint(1, 5)
+    k = random.randint(1, n)
+    # Generate the array of integers
+    a = [random.randint(1, 10) for _ in range(n)]
+
+    # Return the test case as a formatted string
+    return f"{n} {k}\n{' '.join(map(str, a))}"
 
 #! run two solutions
 def run_two_solutions():
-    test_count = 10
+    test_count = 1000
     all_testcases = []
     
     # Collect all test cases
@@ -71,6 +70,42 @@ def run_two_solutions():
             break
     else:
         print(f"{bcolors.OKGREEN}All test cases passed!{bcolors.ENDC}")
+
+#! run two solutions boolean
+def run_two_solutionsbool():
+    test_count = 10
+    all_testcases = []
+    
+    # Collect all test cases
+    for i in range(test_count):
+        all_testcases.append(generate_test_case())
+    
+    # Build a single input string in "Codeforces style"
+    input_data = f"{test_count}\n" + "\n".join(all_testcases)
+    # input_data = "\n".join(all_testcases)
+    # print(input_data)
+    
+    # Run each program once
+    brute_output = run_program("b", input_data).splitlines()
+    optimized_output = run_program("o", input_data).splitlines()
+    
+    # print(brute_output)
+    # print(optimized_output)
+    
+    # Compare the outputs line by line
+    for i in range(test_count):
+        if i >= len(brute_output) or i >= len(optimized_output):
+            print(f"{bcolors.WARNING}Output mismatch in length at test #{i+1}{bcolors.ENDC}")
+            break
+        if brute_output[i].strip() != optimized_output[i].strip():
+            print(f"{bcolors.FAIL}Test #{i+1} Failed!")
+            print(f"Input:\n{all_testcases[i].strip()}")
+            print(f"Brute-force: {brute_output[i]}")
+            print(f"Optimized:   {optimized_output[i]}{bcolors.ENDC}")
+            return True
+    else:
+        print(f"{bcolors.OKGREEN}All test cases passed!{bcolors.ENDC}")
+        return False
 
 #! two solutions with check
 def run_two_solutions_with_check():
@@ -211,8 +246,13 @@ def run_sol_checker():
 
 def main():
     # run_two_solutions()
+    
+    while True:
+        if run_two_solutionsbool():
+            break
+
     # run_two_solutions_with_check()
-    run_sol_checker()
+    # run_sol_checker()
 
 if __name__ == "__main__":
     main()

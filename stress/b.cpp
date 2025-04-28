@@ -1,73 +1,51 @@
-#include <algorithm>
-#include <array>
-#include <bitset>
-#include <cassert>
-#include <chrono>
-#include <cmath>
-#include <cstdint>
-#include <cstring>
-#include <functional>
-#include <iomanip>
-#include <iostream>
-#include <map>
-#include <numeric>
-#include <queue>
-#include <random>
-#include <ranges>
-#include <set>
-#include <vector>
+// #define ONLINE_JUDGE
+#include "bits/stdc++.h"
 using namespace std;
-
-// http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0200r0.html
-template<class Fun> class y_combinator_result {
-    Fun fun_;
-public:
-    template<class T> explicit y_combinator_result(T &&fun): fun_(std::forward<T>(fun)) {}
-    template<class ...Args> decltype(auto) operator()(Args &&...args) { return fun_(std::ref(*this), std::forward<Args>(args)...); }
-};
-template<class Fun> decltype(auto) y_combinator(Fun &&fun) { return y_combinator_result<std::decay_t<Fun>>(std::forward<Fun>(fun)); }
-
-
-template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
-template<typename... Args> ostream& operator<<(ostream& os, const tuple<Args...>& t) { os << '('; apply([&os](const Args&... args) { size_t n = 0; ((os << args << (++n != sizeof...(Args) ? ", " : "")), ...); }, t); return os << ')'; }
-template<typename T_container, typename T = typename enable_if<!is_same<T_container, string>::value, typename T_container::value_type>::type> ostream& operator<<(ostream &os, const T_container &v) { os << '{'; string sep; for (const T &x : v) os << sep << x, sep = ", "; return os << '}'; }
-
-void dbg_out() { cerr << endl; }
-template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr << ' ' << H; dbg_out(T...); }
-#ifdef NEAL_DEBUG
-#define dbg(...) cerr << '[' << __FILE__ << ':' << __LINE__ << "] (" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
+#if __has_include("cleanup/debug.h") && (!defined(ONLINE_JUDGE))
+    #include "cleanup/debug.h"
 #else
-#define dbg(...)
+    #pragma message("debug.h not found, or ONLINE_JUDGE defined.")
+    #define print(...) 69
+    #define printarr(...) 69
 #endif
-
-
-void run_case() {
-    int N, M, K;
-    cin >> N >> M >> K;
-    int nk = gcd(N, K);
-    int mk = K / nk;
-    assert(M % mk == 0);
-
-    for (int i = 0; i < N; i++)
-        for (int j = 0; j < M; j++) {
-            int a = i % nk * mk + (i + j) % mk + 1;
-
-            if (mk == 1)
-                a = j % mk * nk + (i + j) % nk + 1;
-
-            cout << a << (j < M - 1 ? ' ' : '\n');
-        }
+using ll = long long;
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+#define kill(x) return void(cout << (x));
+#define each(x, v) for (auto &x : (v))
+template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
+template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
+template<class T> void getv(T& v) {each(i, v)cin>>i;}
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+int rnglr(int l, int r) {return uniform_int_distribution<int>(l, r)(rng);}
+void solve();
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    cin.exceptions(cin.failbit);
+    int tt = 1;
+    cin >> tt;
+    while(tt--) {
+        solve();
+        if(tt) cout << '\n';
+    }return 0;
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-#ifndef NEAL_DEBUG
-    cin.tie(nullptr);
-#endif
-
-    int tests;
-    cin >> tests;
-
-    while (tests-- > 0)
-        run_case();
+void solve() {
+    int n, k; cin >> n >> k;
+    vector<int> v(n);
+    getv(v);
+    sort(all(v));
+    do {
+        int curr = 0;
+        for (int i = 1; i+1 < n; i++) {
+            if (v[i] > v[i-1] && v[i] > v[i+1])
+                curr++;
+        }
+        if (curr >= k) {
+            each(i, v)
+                cout << i << ' ';
+            return;
+        }
+    } while(next_permutation(all(v)));
+    cout << -1;
 }

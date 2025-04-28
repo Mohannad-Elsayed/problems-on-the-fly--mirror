@@ -23,13 +23,26 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
     }return 0;
 }
-
+#define int ll
 void solve() {
-    
+    int n; cin >> n;
+    int prod = 1;
+    vector<int> ans;
+    for (int i = 1; i < n; i++)
+        if (gcd(i, n) == 1)
+            prod *= i, prod %= n, ans.push_back(i);
+    cout << (ans.size() - (prod != 1)) << '\n';
+    print(prod);
+    print(ans);
+    each(i, ans) {
+        if (prod != 1 && prod == i)
+            continue;
+        cout << i << ' ';
+    }
 }
