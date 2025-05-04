@@ -28,13 +28,23 @@ def run_program(program, input_data):
         return f"Error: {process.stderr.strip()}"
 
 def generate_test_case():
-    n = random.randint(1, 5)
-    k = random.randint(1, n)
-    # Generate the array of integers
-    a = [random.randint(1, 10) for _ in range(n)]
+    length = random.randint(1, 20)  # Length of the strings
+    similarity_level = random.uniform(0.5, 1.0)  # Similarity level between 0 and 1
 
-    # Return the test case as a formatted string
-    return f"{n} {k}\n{' '.join(map(str, a))}"
+    # Generate the first random string
+    string1 = ''.join(random.choices(string.ascii_lowercase, k=length))
+
+    # Generate the second string based on similarity level
+    string2 = list(string1)
+    num_changes = int((1 - similarity_level) * length)
+
+    for _ in range(num_changes):
+        index = random.randint(0, length - 1)
+        string2[index] = random.choice(string.ascii_lowercase)
+
+    string2 = ''.join(string2)
+
+    return string1 + ' ' + string2
 
 #! run two solutions
 def run_two_solutions():
@@ -73,7 +83,7 @@ def run_two_solutions():
 
 #! run two solutions boolean
 def run_two_solutionsbool():
-    test_count = 10
+    test_count = 30000
     all_testcases = []
     
     # Collect all test cases
