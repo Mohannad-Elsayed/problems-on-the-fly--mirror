@@ -33,16 +33,22 @@ int main() {
 
 void solve() {
     int n; cin >> n;
-    vector<int> v(n);
+    vector<int> v(n), ans(n, 1);
     getv(v);
-    int odd[2]{};
-    each(i, v)
-        odd[i%2]++;
-    if (abs(odd[0]-odd[1]) > (n+1)/2)
-        kill(-1);
-    
+    for (int i = 0; i < n; i++) {
+        int cgcd = 0;
+        for (int j = 0; j < n; j++) {
+            if (i == j)
+                continue;
+            cgcd = gcd(cgcd, v[j]);
+        }
+        if (v[i] != cgcd) {
+            cout << "YES\n";
+            ans[i] = 2;
+            each(i, ans)
+                cout << i << ' ';
+            return;
+        }
+    }
+    cout << "NO";
 }
-// a b a b a
-// b a b a b
-// 6 2 3 4 5 1
-// a a b a b b

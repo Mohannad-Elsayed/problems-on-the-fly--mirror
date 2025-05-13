@@ -22,27 +22,25 @@ void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
-    // freopen("area.in", "r", stdin);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
     }return 0;
 }
+int mod = 1e9+7;
 
 void solve() {
-    int n; cin >> n;
-    vector<int> v(n);
+    int n, x; cin >> n >> x;
+    vector<int> v(n), dp(x+1);
     getv(v);
-    int odd[2]{};
-    each(i, v)
-        odd[i%2]++;
-    if (abs(odd[0]-odd[1]) > (n+1)/2)
-        kill(-1);
-    
+    dp[0] = 1;
+    each(c, v) 
+        for (int i = 1; i <= x; i++) 
+            if (c <= i) {
+                dp[i] += dp[i-c];
+                dp[i] %= mod;
+            }
+    cout << dp[x];
 }
-// a b a b a
-// b a b a b
-// 6 2 3 4 5 1
-// a a b a b b

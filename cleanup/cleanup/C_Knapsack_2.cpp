@@ -22,9 +22,8 @@ void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
-    // freopen("area.in", "r", stdin);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
@@ -32,17 +31,23 @@ int main() {
 }
 
 void solve() {
-    int n; cin >> n;
-    vector<int> v(n);
-    getv(v);
-    int odd[2]{};
-    each(i, v)
-        odd[i%2]++;
-    if (abs(odd[0]-odd[1]) > (n+1)/2)
-        kill(-1);
-    
+    int n, k; cin >> n >> k;
+    // dp[val] -> minimum weight needed to achieve this value
+    // dp[0] = 0
+    // dp[v] = min(dp[v], dp[v-val]+wei)
+    int wei[n], vals[n];
+    for (int i = 0; i<n; i++)
+        cin >> wei[i] >> vals[i];
+    int mxv = 100001;
+    int dp[mxv];
+    for (int i = 1; i<mxv; i++)
+        dp[i] = 1e9+100;
+    dp[0] = 0;
+    for (int i = 0; i < n; i++)
+        for (int j = mxv-1; j >= vals[i]; j--)
+            chmin(dp[j], dp[j-vals[i]]+wei[i]);
+    int ans = 0;
+    for (int i = 0; i < mxv; i++)
+        if (dp[i] <= k) ans = i;
+    cout << ans;
 }
-// a b a b a
-// b a b a b
-// 6 2 3 4 5 1
-// a a b a b b

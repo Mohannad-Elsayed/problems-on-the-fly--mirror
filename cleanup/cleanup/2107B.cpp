@@ -30,19 +30,14 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-
+#define int ll
 void solve() {
-    int n; cin >> n;
+    int n, k; cin >> n >> k;
     vector<int> v(n);
     getv(v);
-    int odd[2]{};
-    each(i, v)
-        odd[i%2]++;
-    if (abs(odd[0]-odd[1]) > (n+1)/2)
-        kill(-1);
-    
+    if ((*max_element(all(v)) - *min_element(all(v)) - 1 > k) || 
+        (*max_element(all(v)) - *min_element(all(v)) - 1 == k && count(all(v), *max_element(all(v))) > 1)) {
+        kill("Jerry");
+    }
+    cout << (accumulate(all(v), 0ll) % 2 ? "Tom" : "Jerry");
 }
-// a b a b a
-// b a b a b
-// 6 2 3 4 5 1
-// a a b a b b

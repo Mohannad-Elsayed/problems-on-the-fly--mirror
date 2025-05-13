@@ -32,17 +32,5 @@ int main() {
 }
 
 void solve() {
-    int n; cin >> n;
-    vector<int> v(n);
-    getv(v);
-    int odd[2]{};
-    each(i, v)
-        odd[i%2]++;
-    if (abs(odd[0]-odd[1]) > (n+1)/2)
-        kill(-1);
     
 }
-// a b a b a
-// b a b a b
-// 6 2 3 4 5 1
-// a a b a b b

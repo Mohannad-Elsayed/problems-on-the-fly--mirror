@@ -22,9 +22,8 @@ void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
-    // freopen("area.in", "r", stdin);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
@@ -33,16 +32,14 @@ int main() {
 
 void solve() {
     int n; cin >> n;
-    vector<int> v(n);
+    vector<int> v(n), ans(n);
     getv(v);
-    int odd[2]{};
-    each(i, v)
-        odd[i%2]++;
-    if (abs(odd[0]-odd[1]) > (n+1)/2)
-        kill(-1);
-    
+    for (int i = 0; i<n; i++)
+        for (int j = i-1; ~j; j--)
+            if (gcd(v[i], v[j]) > 1) {
+                chmax(ans[i], ans[j]+1);
+                break;
+            }
+    print(ans);
+    cout << *max_element(all(ans))+1;
 }
-// a b a b a
-// b a b a b
-// 6 2 3 4 5 1
-// a a b a b b

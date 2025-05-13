@@ -22,7 +22,6 @@ void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
-    // freopen("area.in", "r", stdin);
     int tt = 1;
     cin >> tt;
     while(tt--) {
@@ -30,19 +29,30 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-
-void solve() {
-    int n; cin >> n;
-    vector<int> v(n);
-    getv(v);
-    int odd[2]{};
-    each(i, v)
-        odd[i%2]++;
-    if (abs(odd[0]-odd[1]) > (n+1)/2)
-        kill(-1);
-    
+constexpr int N = 1010, mod = 1e9+7;
+int dp[N][N][2];
+int n, k;
+int rec(int rem, int idx, int dir) {
+    if (idx < 0 || idx == n)
+        return 1;
+    int& ret = dp[rem][idx][dir];
+    if (~ret)
+        return ret;
+    ret = 0;
+    if (dir) {
+        if (rem > 1)
+            ret += rec(rem-1, idx-1, !dir); ret %= mod;
+        ret += rec(rem, idx+1, dir); ret %= mod;
+    } else {
+        ret += rec(rem, idx-1, dir); ret %= mod;
+        if (rem > 1)
+            ret += rec(rem-1, idx+1, !dir); ret %= mod;
+    }
+    return ret;
 }
-// a b a b a
-// b a b a b
-// 6 2 3 4 5 1
-// a a b a b b
+void solve() {
+    cin >> n >> k;
+    memset(dp, -1, sizeof(dp));
+    int res = rec(k, 0, 1);
+    cout << res;
+}

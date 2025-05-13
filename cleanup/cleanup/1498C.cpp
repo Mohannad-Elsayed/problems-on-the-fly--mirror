@@ -30,19 +30,30 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
-
-void solve() {
-    int n; cin >> n;
-    vector<int> v(n);
-    getv(v);
-    int odd[2]{};
-    each(i, v)
-        odd[i%2]++;
-    if (abs(odd[0]-odd[1]) > (n+1)/2)
-        kill(-1);
-    
+int mod = 1e9+7, n, k; 
+int dp[1005][1005][2];
+int rec(int index, int remain, int direction) {
+    if (remain == 1)
+        return 1;
+    int& ret = dp[index][remain][direction];
+    if (~ret)
+        return ret;
+    ret = 2;
+    if (direction) {
+        if (index + 1 < n)
+            ret += rec(index+1, remain, direction) % mod, ret--;
+        if (index > 0)
+            ret += rec(index-1, remain-1, !direction) % mod, ret--;
+    } else {
+        if (index + 1 < n)
+            ret += rec(index+1, remain-1, !direction) % mod, ret--;
+        if (index > 0)
+            ret += rec(index-1, remain, direction) % mod, ret--;
+    }
+    return (ret%mod + mod) % mod;
 }
-// a b a b a
-// b a b a b
-// 6 2 3 4 5 1
-// a a b a b b
+void solve() {
+    cin >> n >> k;
+    memset(dp, -1, sizeof(dp));
+    cout << rec(0, k, 1);
+}
