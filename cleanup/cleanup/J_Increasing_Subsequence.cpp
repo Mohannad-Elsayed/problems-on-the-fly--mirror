@@ -24,13 +24,56 @@ int main() {
     cin.exceptions(cin.failbit);
     // freopen("area.in", "r", stdin);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
     }return 0;
 }
+template<class T>
+int lis_size(T& nums) {
+    vector<int> tail;
+    for (auto x : nums) {
+        auto it = lower_bound(tail.begin(), tail.end(), x);
+        if (it == tail.end()) tail.push_back(x);
+        else *it = x;
+    }
+    return tail.size();
+}
+
+vector<int> get_lis(vector<int>& nums) {
+    int n = nums.size();
+    vector<int> tail, idx, prev(n, -1), pos;
+
+    for (int i = 0; i < n; ++i) {
+        int x = nums[i];
+        auto it = lower_bound(tail.begin(), tail.end(), x);
+        int j = it - tail.begin();
+
+        if (it == tail.end()) {
+            tail.push_back(x);
+            idx.push_back(i);
+        } else {
+            *it = x;
+            idx[j] = i;
+        }
+
+        if (j > 0)
+            prev[i] = idx[j - 1];
+    }
+
+    vector<int> lis;
+    for (int i = idx.back(); i >= 0; i = prev[i])
+        lis.push_back(nums[i]);
+    reverse(lis.begin(), lis.end());
+
+    return lis;
+}
+
 
 void solve() {
-    
+    int n; cin >> n;
+    vector<int> v(n), dp;
+    getv(v);
+    cout << lis_size(v);
 }

@@ -24,13 +24,23 @@ int main() {
     cin.exceptions(cin.failbit);
     // freopen("area.in", "r", stdin);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
     }return 0;
 }
-
+int cnt, n;
+void rec(int idx = 0, int a = 0, int b = 0) {
+    if (idx == n+1) {
+        cnt += a == b;
+        return;
+    }
+    rec(idx+1, a + idx + 1, b);
+    rec(idx+1, a, b + idx + 1);
+}
 void solve() {
-    
+    cin >> n;
+    rec();
+    cout << cnt;
 }

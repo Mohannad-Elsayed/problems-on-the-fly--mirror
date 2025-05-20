@@ -23,7 +23,7 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
     int tt = 1;
-    // cin >> tt;
+    cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
@@ -31,23 +31,10 @@ int main() {
 }
 
 void solve() {
-    int n; cin >> n;
-    vector<int> coins(n), possible;
-    getv(coins);
-    vector<vector<bool>> dp(101, vector<bool>(100001));
-    dp[0][0] =1;
-    for (int i = 1; i <= n; i++) {
-        for (int j = 0; j < 100001; j++) {
-            dp[i][j] = dp[i-1][j];
-            if (j-coins[i-1] >= 0 && dp[i-1][j-coins[i-1]])
-                dp[i][j] = 1;
-        }
-    }
-    for (int i = 1; i < 100001; i++)
-        if (dp[n][i])
-            possible.emplace_back(i);
-    print(possible);
-    cout << possible.size() << '\n';
-    each(i, possible)
-        cout << i << ' ';
-}
+    // enough to consider a < 4 and b < 4
+    // upper bound of m
+    // how to start solving it
+    // prerequisite 
+    // how it's related to bernoulli number, eois?
+    // why 37 requires more than 1e7
+} 

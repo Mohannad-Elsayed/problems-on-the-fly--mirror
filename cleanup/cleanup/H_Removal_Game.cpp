@@ -24,13 +24,51 @@ int main() {
     cin.exceptions(cin.failbit);
     // freopen("area.in", "r", stdin);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
     }return 0;
 }
+#define int ll
+deque<int> dq;
+set<pair<int, int>> pos;
+int a, b;
+void rec(bool f = 1) {
+    if (dq.empty()) {
+        pos.insert({a, b});
+        return;
+    }
+    int fro = dq.front(), bac = dq.back();
+    if (f) {
+        a += fro;
+        dq.pop_front();
+        rec(!f);
+        a -= fro;
+        dq.push_front(fro);
+        a += bac;
+        dq.pop_back();
+        rec(!f);
+        a -= bac;
+        dq.push_back(bac);
+    } else {
+        b += fro;
+        dq.pop_front();
+        rec(!f);
+        b -= fro;
+        dq.push_front(fro);
+        b += bac;
+        dq.pop_back();
+        rec(!f);
+        b -= bac;
+        dq.push_back(bac);
 
+    }
+}
 void solve() {
-    
+    int n; cin >> n;
+    dq = deque<int>(n);
+    getv(dq);
+    rec();
+    print(pos);
 }

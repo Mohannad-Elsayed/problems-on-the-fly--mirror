@@ -23,7 +23,7 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
     int tt = 1;
-    cin >> tt;
+    // cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
@@ -31,78 +31,38 @@ int main() {
 }
 
 template<typename T>
-class sparse {
-private:
-    int Log, n;
-    vector<vector<T>> table;
+struct sparse_table {
+    vector<vector<T>> st;
+    int n, logn;
     function<T(T, T)> merge;
-    int is_overlap;
-
-public:
-    template<typename U>
-    explicit sparse(vector<T> arr, U& f, int is_overlap = 0, T skip) 
-        :is_overlap(is_overlap), n((int)arr.size()), merge(f), Log(__lg(arr.size()) + 1), table(Log, vector<T>(n)) {
-        table[0] = arr;
-        for (int l = 1; l < Log; l++) {
-            for (int i = 0; i + (1 << (l - 1)) < n; i++) {
-                table[l][i] = merge(table[l - 1][i], table[l - 1][i + (1 << (l - 1))]);
-            }
-        }
+    T skip;
+    sparse_table(const vector<T>& a, function<T(T, T)> f, T skip = T())
+        : n(a.size()), merge(f), skip(skip) {
+        logn = 32 - __builtin_clz(n);
+        st.assign(logn, vector<T>(n));
+        st[0] = a;
+        for (int k = 1; k < logn; ++k)
+            for (int i = 0; i + (1 << k) <= n; ++i)
+                st[k][i] = merge(st[k-1][i], st[k-1][i + (1 << (k-1))]);
     }
-
-    T query_overlap(int l, int r) { // [l, r], 0-based
-        assert(l <= r);
-        int len = __lg(r - l + 1);
-        return merge(table[len][l], table[len][r - (1 << len) + 1]);
+    T query(int l, int r) { // [l, r]
+        int k = 31 - __builtin_clz(r - l + 1);
+        return merge(st[k][l], st[k][r - (1 << k) + 1]);
     }
-
-    T query_non_overlap(int l, int r) { // [l, r], 0-based
-        assert(l <= r);
-        int sz = r - l + 1;
-        T ret = skip;
-        for (int i = 0; i < Log; i++) {
-            if ((sz >> i) & 1) {
-                ret = merge(ret, table[i][l]);
-                l += (1 << i);
-            }
-        }
-        return ret;
-    }
-
-    T query(int l, int r) {
-        if (is_overlap) {
-            return query_overlap(l, r);
-        } else {
-            return query_non_overlap(l, r);
-        }
+    T query_nonid(int l, int r) {
+        T res = skip;
+        for (int k = logn-1; k >= 0; --k)
+            if ((1 << k) <= r - l + 1)
+                res = merge(res, st[k][l]), l += 1 << k;
+        return res;
     }
 };
 
 void solve() {
-    vector<int> v {1, 2, 1, 4, 5, 6};
-    function<int(int, int)> mn = [&](int a, int b) {
-        return min(a, b);
+    vector<int> v {1,2,3,4,1,2,3,4,3,4,3,4};
+    function<int(int, int)> su = [&](int a, int b) {
+        return a^b;
     };
-    sparse<int> sp(v, mn, 0, 0);
+    sparse_table<int> sp(v, su, 0);
+    cout << sp.query_nonid(0, 3);
 }
-
-/*
-
-recursion
-graphs
-number theory
-dp basic
-
-dsu, floyd, kruskal, bellman, toposort, 
-segment tree, sparse, ordered ds
-hashing, trie
-
-sqrt, mo, lca, binary lifting
-kmp, z-function
-
-dp on anything
-SCC, tarjan
-matching
-
-
-*/

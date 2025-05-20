@@ -22,32 +22,51 @@ void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
+    freopen("inc.in", "r", stdin);
     int tt = 1;
-    // cin >> tt;
+    cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
     }return 0;
 }
+istream &operator>>(istream &is,__int128_t &v) {
+    string s;
+    is>>s;
+    v=0;
+    for(auto &it:s) if(isdigit(it)) v=v*10+it-'0';
+    if(s[0]=='-') v*=-1;
+    return is;
+}
+
+ostream &operator<<(ostream &os,const __int128_t &v) {
+    if(v==0) return (os<<"0");
+    __int128_t num=v;
+    if(v<0) os<<'-',num=-num;
+    string s;
+    for(;num>0;num/=10) s.push_back((char)(num%10)+'0');
+    reverse(all(s));
+    return (os<<s);
+}
+
 
 void solve() {
-    int n; cin >> n;
-    vector<int> coins(n), possible;
-    getv(coins);
-    vector<vector<bool>> dp(101, vector<bool>(100001));
-    dp[0][0] =1;
-    for (int i = 1; i <= n; i++) {
-        for (int j = 0; j < 100001; j++) {
-            dp[i][j] = dp[i-1][j];
-            if (j-coins[i-1] >= 0 && dp[i-1][j-coins[i-1]])
-                dp[i][j] = 1;
-        }
+    int arr[26];
+    __int128_t sum=0;
+    for(int i=0;i<26;i++){
+        cin>>arr[i];
+        sum+=arr[i];
     }
-    for (int i = 1; i < 100001; i++)
-        if (dp[n][i])
-            possible.emplace_back(i);
-    print(possible);
-    cout << possible.size() << '\n';
-    each(i, possible)
-        cout << i << ' ';
+    __int128_t ans=0;
+    __int128_t l=1,r=1e12;
+    while (l<=r){
+        __int128_t mid=l+(r-l)/2;
+        if((mid*(mid+1))/2<=sum){
+            ans=mid;
+            l=mid+1;
+        }
+        else r=mid-1;
+    }
+    cout<<ans;
+    
 }

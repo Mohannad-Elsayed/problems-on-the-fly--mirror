@@ -22,8 +22,9 @@ void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
+    // freopen("area.in", "r", stdin);
     int tt = 1;
-    // cin >> tt;
+    cin >> tt;
     while(tt--) {
         solve();
         if(tt) cout << '\n';
@@ -31,23 +32,27 @@ int main() {
 }
 
 void solve() {
-    int n; cin >> n;
-    vector<int> coins(n), possible;
-    getv(coins);
-    vector<vector<bool>> dp(101, vector<bool>(100001));
-    dp[0][0] =1;
-    for (int i = 1; i <= n; i++) {
-        for (int j = 0; j < 100001; j++) {
-            dp[i][j] = dp[i-1][j];
-            if (j-coins[i-1] >= 0 && dp[i-1][j-coins[i-1]])
-                dp[i][j] = 1;
-        }
+    int n, m, k; cin >> n >> m >> k;
+    set<string> allf, wf, in_stage, to_be_put_in_stage;
+    for (int i = 0; i<n; i++) {
+        string s; cin >> s; 
+        allf.insert(s);
     }
-    for (int i = 1; i < 100001; i++)
-        if (dp[n][i])
-            possible.emplace_back(i);
-    print(possible);
-    cout << possible.size() << '\n';
-    each(i, possible)
-        cout << i << ' ';
+    for (int i = 0; i<m; i++) {
+        string s; cin >> s; 
+        in_stage.insert(s);
+    }
+    for (int i = 0; i<k; i++) {
+        string s; cin >> s; 
+        to_be_put_in_stage.insert(s);
+    }
+
+    int ans1 = 0;
+    each(s, in_stage)
+        ans1 += !to_be_put_in_stage.count(s);
+    each(s, to_be_put_in_stage)
+        ans1 += !in_stage.count(s);
+
+    print(ans1, k+1, n-k+1, n, k);
+    cout << min({ans1, k+1, n-k+1});
 }

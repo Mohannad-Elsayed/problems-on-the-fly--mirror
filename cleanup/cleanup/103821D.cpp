@@ -22,6 +22,7 @@ void solve();
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
+    // freopen("area.in", "r", stdin);
     int tt = 1;
     // cin >> tt;
     while(tt--) {
@@ -29,25 +30,14 @@ int main() {
         if(tt) cout << '\n';
     }return 0;
 }
+void stress() {
+    for (int n = 1; n < 100; n++) {
 
-void solve() {
-    int n; cin >> n;
-    vector<int> coins(n), possible;
-    getv(coins);
-    vector<vector<bool>> dp(101, vector<bool>(100001));
-    dp[0][0] =1;
-    for (int i = 1; i <= n; i++) {
-        for (int j = 0; j < 100001; j++) {
-            dp[i][j] = dp[i-1][j];
-            if (j-coins[i-1] >= 0 && dp[i-1][j-coins[i-1]])
-                dp[i][j] = 1;
-        }
+
+
+        print(n);
     }
-    for (int i = 1; i < 100001; i++)
-        if (dp[n][i])
-            possible.emplace_back(i);
-    print(possible);
-    cout << possible.size() << '\n';
-    each(i, possible)
-        cout << i << ' ';
+}
+void solve() {
+    
 }
