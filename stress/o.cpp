@@ -1,87 +1,85 @@
-
-#include <bits/stdc++.h> using namespace std; #define fast
-ios::sync_with_stdio(false);
-cin.tie(NULL);
-cout.tie(NULL);
-#define end] "\n";
-#define yes cout << "YES" << endl; #define no cout << "NO" << endl; typedef long long_int_11;
-const 11 mod = 1e9 + 7; const 11 nmax = 2e5 + 10;
-11 mxsub (vector<11> number)
-{
-11 curmax = -1e17; 11 mx = 0;
-for (11 num : number)
-{
-}
-}
-mx = max(num, mx + num); curmax = max(curmax, mx);
-return curmax;
-void solve()
-{
-11 n, k;
-cin >> n >> k;
-string s; cin >> s;
-vector<11> a(n); map<char, 11> m;
-
-for (11 i = 0; i < n; i++)
-{
-}
-cin >> a[i]; m[s[i]]++;
-vector<11> b; 11 mx = 0;
-for (11 i = 0; i < n; i++)
-{
-if (s[i]
-{
-'0')
-mx = max(mx, mxsub(b)); b.clear(); continue;
-b.push_back(a[i]); if (i == n - 1)
-mx = max(mx, mxsub (b)); b.clear();
-continue;
-}
-}
-if (m['1'] == n)
-{
-if (mx
-==
-k)
-{
-yes;
-for (auto u: a)
-{
-cout << u <<< " ";
-}
-cout<<<endl;
+// #define ONLINE_JUDGE
+#include "bits/stdc++.h"
+using namespace std;
+#if __has_include("cleanup/debug.h") && (!defined(ONLINE_JUDGE))
+    #include "cleanup/debug.h"
+#else
+    #pragma message("debug.h not found, or ONLINE_JUDGE defined.")
+    #define print(...) ((void)0)
+    #define printarr(...) ((void)0)
+#endif
+using ll = long long;
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+#define kill(x) return void(cout << (x));
+#define each(x, v) for (auto &x : (v))
+template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
+template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
+template<class T> void getv(T& v) {each(i, v)cin>>i;}
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+template<class T> T rnglr(T l, T r) {return uniform_int_distribution<T>(l, r)(rng);}
+void solve();
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    cin.exceptions(cin.failbit);
+    // freopen("area.in", "r", stdin);
+    int tt = 1;
+    cin >> tt;
+    while(tt--) {
+        solve();
+        if(tt) cout << '\n';
+    }return 0;
 }
 
+string base11_digits = "AHIMOTUVWXY";
+unordered_map<char, int> char_to_digit = {
+    {'A', 0}, {'H', 1}, {'I', 2}, {'M', 3}, {'O', 4},
+    {'T', 5}, {'U', 6}, {'V', 7}, {'W', 8}, {'X', 9}, {'Y', 10}
+};
+
+ll from_base11(const string& s) {
+    ll res = 0;
+    for (char c : s) {
+        res = res * 11 + char_to_digit[c];
+    }
+    return res;
 }
-else
-{
+
+string to_base11(ll n) {
+    if (n == 0) return string(1, base11_digits[0]);
+    string res;
+    while (n > 0) {
+        res += base11_digits[n % 11];
+        n /= 11;
+    }
+    reverse(res.begin(), res.end());
+    return res;
 }
-no;
-return;
-if (mx > k)
-{
-no;
+
+// Adds two base 11 numbers represented as strings
+string add_base11(const string& a, const string& b) {
+    int n = a.size(), m = b.size();
+    int i = n - 1, j = m - 1, carry = 0;
+    string res;
+    while (i >= 0 || j >= 0 || carry) {
+        int d1 = (i >= 0) ? char_to_digit[a[i]] : 0;
+        int d2 = (j >= 0) ? char_to_digit[b[j]] : 0;
+        int sum = d1 + d2 + carry;
+        res += base11_digits[sum % 11];
+        carry = sum / 11;
+        i--; j--;
+    }
+    reverse(res.begin(), res.end());
+    return res;
 }
-else
-{
-yes;
-11 cur = 0;
-for (11 i = 0; i < n; i++)
-{
-if (s[i]
-'0')
-{
-cur = i;
-break;
+
+void solve() {
+    string s, ks; 
+    int k; cin >> k >> s;
+    ks = to_base11(k);
+    string ans = add_base11(s, ks);
+    for (int i = 0; i < ans.size() - s.size(); i++)
+        ans[i] = base11_digits[base11_digits.find(ans[i])-1];
+    print(ans);
+    cout << ans;
 }
-11 sum1 = 0;
-11 mx1 = 0;
-for (11 i cur 1; i >= 0; i--)
-{
-sum1+a[i];
-mx1 = max(mx1, sum1);
-11 sum2 = 0;
-11 mx2 = 0;
-for (11 i cur + 1; i < n; i++)
-{
-if (s[i] == '0')

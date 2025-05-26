@@ -1,174 +1,142 @@
-﻿#define ONLINE_JUDGE
-#include "bits/stdc++.h"
+﻿#include <bits/stdc++.h>
+
+#define all(v) v.begin(), v.end()
+#define rall(v) v.rbegin(), v.rend()
+#define make_unique(x) sort(all(x)), x.erase(unique(all(x)), x.end())
+
 using namespace std;
-#if __has_include("cleanup/debug.h") && (!defined(ONLINE_JUDGE))
-    #include "cleanup/debug.h"
-#else
-    #pragma message("debug.h not found, or ONLINE_JUDGE defined.")
-    #define print(...) 69
-    #define printarr(...) 69
-#endif
+template <typename T> T nxt();
+template <typename T> class is_iterable {
+  public:
+    template <typename U>
+    static auto test(U *u) -> decltype(u->begin(), u->end(), true_type{});
+    template <typename> static false_type test(...);
+    static constexpr bool value =
+        !is_same<T, string>::value && decltype(test<T>(nullptr))::value;
+};
+template <typename T>
+typename enable_if<is_iterable<T>::value>::type nxtseq(T &x);
+template <typename T>
+typename enable_if<!is_iterable<T>::value>::type nxtseq(T &x);
+template <typename T1, typename T2> void nxtseq(pair<T1, T2> &p);
+template <typename Itr> void nxtseq(Itr begin, Itr end);
+
+using ld = long double;
 using ll = long long;
-#define all(x) (x).begin(), (x).end()
-#define rall(x) (x).rbegin(), (x).rend()
-#define kill(x) return void(cout << (x));
-#define each(x, v) for (auto &x : (v))
-template<class T> bool chmin(T &a,const T &b){if(a>b){a=b;return 1;}else return 0;}
-template<class T> bool chmax(T &a,const T &b){if(a<b){a=b;return 1;}else return 0;}
-template<class T> void getv(T& v) {each(i, v)cin>>i;}
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-int rnglr(int l, int r) {return uniform_int_distribution<int>(l, r)(rng);}
-void solve();
-int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    cin.exceptions(cin.failbit);
-    // freopen("area.in", "r", stdin);
-    int tt = 1;
-    cin >> tt;
-    while(tt--) {
-        solve();
-        if(tt) cout << '\n';
-    }return 0;
+using llu = unsigned long long;
+
+const bool T = 1;         // Multiple test cases?
+const string iofile = ""; // I/O file?
+
+vector<char> decode({'\0', 'A', 'H', 'I', 'M', 'O', 'T', 'U', 'V', 'W', 'X', 'Y'});
+unordered_map<char, int> encode({{'A', 1},
+                                 {'H', 2},
+                                 {'I', 3},
+                                 {'M', 4},
+                                 {'O', 5},
+                                 {'T', 6},
+                                 {'U', 7},
+                                 {'V', 8},
+                                 {'W', 9},
+                                 {'X', 10},
+                                 {'Y', 11}});
+
+vector<int> smallCase(ll k, string str) {
+    vector<int> res;
+    ll pos = 0, mul = 1, len = str.size();
+    reverse(all(str));
+    for (char c : str) {
+        pos += (encode[c] - 1) * mul;
+        mul *= 11;
+    }
+    while (mul - pos <= k) {
+        k -= mul - pos, mul *= 11, len++, pos = 0;
+    }
+    k += pos;
+    for (int i = 0; i < len; i++) {
+        mul /= 11;
+        ll cnt = k / mul;
+        k -= mul * cnt;
+        res.push_back(cnt + 1);
+    }
+    return res;
 }
-#define int ll
-template<class T>
-array<ll, 3> kadane(const vector<T>& arr) {
-    ll mx = LLONG_MIN, csum = 0;
-    ll s = 0, e = 0, ts = 0, sz = arr.size();
-    for (ll i = 0; i < sz; i++) {
-        if (csum + arr[i] > arr[i]) {
-            csum += arr[i];
-        } else {
-            csum = arr[i];
-            ts = i;
+vector<int> largeCase(ll k, string str) {
+    ll len = str.size() + 1;
+    vector<int> smallRes = smallCase(k, string(str.end() - 11, str.end()));
+    vector<int> res(len, 0);
+    for (int i = 1; i < len; i++) {
+        res[i] = encode[str[i - 1]];
+    }
+    if (smallRes.size() == 11) {
+        for (int i = 0; i < 11; i++) {
+            res[res.size() - 11 + i] = smallRes[i];
         }
-        if (csum > mx) {
-            mx = csum;
-            s = ts;
-            e = i;
+    } else {
+        for (int i = 1; i <= 11; i++) {
+            res[res.size() - 11 + i - 1] = smallRes[i];
+        }
+        res[len - 12] += smallRes[0];
+        for (int i = len - 12; res[i] > 11; i--) {
+            res[i] -= 11;
+            res[i - 1]++;
         }
     }
-    return {mx, s, e};
+    return res;
 }
 void solve() {
-    int n, k; string s;
-    cin >> n >> k >> s;
-    vector<int> v(n);
-    getv(v);
-    int sum = 0;
-    // print(kadane(v));
-    // int mn = -1e10, cnt = count(all(s), '0');
-    // for (int i = 0, j = 0; i<n && j+1 < cnt; i++) {
-    //     if (s[i] == '0') {
-    //         v[i] = mn;
-    //     }
-    // }
-    // for (int i = n-1; ~i; i--) {
-    //     if (s[i] == '0') {
-    //         v[i] = k - sum;
-    //         break;
-    //     }
-    // }
-    // print(v);
-    // print(kadane(v));
-    // for (int i = 0; i<n; i++) {
-    //     if (s[i] == '0') {
-    //         for (int j = 0; j < 1000; j++) {
-    //             v[i] = j;
-    //             print(j, kadane(v));
-    //             // print(accumulate(v.begin() + kadane(v)[1], v.begin()+kadane(v)[2]+1, 0ll));
-    //         }
-    //         break;
-    //     }
-    // }
-
-    auto mxsub = kadane(v);
-    int mxsubsum = mxsub[0];
-    int l = -1e18, r = 1e18, mid, res = -1;
-    int f0 = -1;
-    for (int i = 0; i<n; i++) {
-        if (s[i] == '0') {
-            f0 = i;
-            break;
-        }
+    int k;
+    string str;
+    cin >> k >> str;
+    vector<int> res = str.size() > 11 ? largeCase(k, str) : smallCase(k, str);
+    for (int i = 0; i < res.size(); i++) {
+        cout << decode[res[i]];
     }
-    for (int i = f0+1; i < n; i++)
-        if (s[i] == '0')
-            v[i] = -1e12;
-
-    auto check = [&](int m) -> bool {
-        v[f0] = m;
-        int currmxsum = kadane(v)[0];
-        print(v, currmxsum);
-        return currmxsum >= k;
-    };
-    if (f0 == -1) {
-        if (mxsubsum == k) {
-            cout << "YES\n";
-            each(i, v)
-                cout << i << ' ';
-            return;
-        }
-        kill("NO");
-    }
-    while(l <= r) {
-        mid = l + (r-l)/2;
-        if (check(mid)) {
-            res = mid;
-            r = mid-1;
-        } else l = mid+1;
-    }
-    v[f0] = res;
-    if (kadane(v)[0] != k) {
-        kill("NO");
-    }
-    cout << "YES\n";
-    each(i, v)
-        cout << i << ' ';
 }
 
+void precompute() {
+}
 
-/*
-10
-3 5
-011
-0 0 1
+void IOSetter();
+void TCGetter();
 
-5 6
-11011
-4 -3 0 -2 1
+int main() { // Don't touch it, compile with "_DEBUG" flag
+    precompute();
+    IOSetter();
+    TCGetter();
+}
 
-4 4
-0011
-0 0 -4 -5
+void TCGetter() {
+    int t = T ? nxt<int>() : 1;
+    do {
+        solve();
+    } while (--t && cout << '\n');
+};
 
-6 12
-110111
-1 2 0 5 -1 9
+void IOSetter() {
+}
 
-5 19
-00000
-0 0 0 0 0
-
-5 19
-11001
--8 6 0 0 -5
-
-5 10
-10101
-10 0 10 0 10
-
-1 1
-1
-0
-
-3 5
-111
-3 -1 3
-
-4 5
-1011
--2 0 1 -5
-
-
-*/
+template <typename T> T nxt() {
+    T x;
+    cin >> x;
+    return x;
+}
+template <typename T>
+typename enable_if<!is_iterable<T>::value>::type nxtseq(T &x) {
+    cin >> x;
+}
+template <typename T>
+typename enable_if<is_iterable<T>::value>::type nxtseq(T &x) {
+    for (auto &v : x) {
+        nxtseq(v);
+    }
+}
+template <typename Itr> void nxtseq(Itr begin, Itr end) {
+    for (Itr itr = begin; itr < end; ++itr) {
+        nxtseq(*itr);
+    }
+}
+template <typename T1, typename T2> void nxtseq(pair<T1, T2> &p) {
+    nxtseq(p.first);
+    nxtseq(p.second);
+}
